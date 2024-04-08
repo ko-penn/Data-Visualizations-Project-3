@@ -1,2 +1,1 @@
-# Data-Visualizations-Project-3
-Project 3: TV-time
+Repo deployed on [Netlify](https://data-visualizations-project-3.netlify.app/)

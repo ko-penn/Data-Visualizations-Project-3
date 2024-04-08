@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Project 3</title>
+      <link rel="icon" href="data:;base64,iVBORwOKGO=" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+         href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+         rel="stylesheet"
+      />
+
+      <link rel="stylesheet" href="css/style.css" />
+      <link
+         defer
+         rel="stylesheet"
+         href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/themes/light.css"
+      />
+
+      <!-- Dependencies -->
+      <script defer src="js/dependencies/d3.v6.min.js"></script>
+      <script defer src="js/dependencies/d3.layout.cloud.js"></script>
+      <script
+         defer
+         type="module"
+         src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/shoelace-autoloader.js"
+      ></script>
+      <script
+         src="https://kit.fontawesome.com/ce1e161f8c.js"
+         crossorigin="anonymous"
+      ></script>
+
+      <script type="module" defer src="js/index.mjs"></script>
+   </head>
+   <body>
+      <div id="header">
+         <div class="lhs">
+            <div class="top">
+               <h1>Project 3</h1>
+            </div>
+            <div class="bottom">
+               <p>By Devin Harris, Alex Yang, and Kody Penn</p>
+            </div>
+         </div>
+
+         <div class="rhs">
+            <a target="_blank" href="./documentation.html">
+               <button id="info">
+                  Documentation
+                  <i class="fas fa-external-link-alt"></i>
+               </button>
+            </a>
+         </div>
+      </div>
+
+      <div class="content">
+         <sl-split-panel position="25" style="--divider-width: 20px">
+            <sl-icon slot="divider" name="grip-vertical"></sl-icon>
+
+            <div slot="start" class="lhs">
+               <form id="episodes-selector"></form>
+               <form id="characters-selector"></form>
+            </div>
+
+            <div slot="end" class="rhs">
+               <sl-tab-group>
+                  <sl-tab slot="nav" panel="general">General</sl-tab>
+                  <sl-tab-panel name="general">
+                     <div>
+                        <h3>Synopsis</h3>
+                        <p>
+                           "Friends" is an iconic American sitcom that aired
+                           from September 22, 1994, to May 6, 2004, totaling 10
+                           seasons. The show was created by David Crane and
+                           Marta Kauffman and aired on the NBC network in the
+                           United States.
+                        </p>
+                     </div>
+                     <br />
+                     <div>
+                        <h3>Show Information</h3>
+                        <p>Platform: NBC (National Broadcasting Company)</p>
+                        <p>Number of Seasons: 10</p>
+                        <p>Number of Episodes: 236</p>
+                        <p>Genre: Sitcom, Comedy</p>
+                     </div>
+                     <br />
+                     <div>
+                        <h3>Main Characters</h3>
+                        <p>
+                           Rachel Green (Jennifer Aniston): Originally a
+                           waitress at Central Perk, Rachel transitions into the
+                           fashion industry.
+                        </p>
+                        <p>
+                           Ross Geller (David Schwimmer): A paleontologist with
+                           a tumultuous romantic life, particularly with Rachel.
+                        </p>
+                        <p>
+                           Monica Geller (Courteney Cox): A chef with a love for
+                           cleanliness and order, Ross's sister.
+                        </p>
+                        <p>
+                           Chandler Bing (Matthew Perry): A sarcastic executive
+                           in statistical analysis and data reconfiguration,
+                           with a mysterious job.
+                        </p>
+                        <p>
+                           Joey Tribbiani (Matt LeBlanc): An aspiring actor and
+                           food lover, known for his catchphrase "How you
+                           doin'?"
+                        </p>
+                        <p>
+                           Phoebe Buffay (Lisa Kudrow): A quirky musician with
+                           an unusual past, known for her eclectic songs.
+                        </p>
+                     </div>
+                     <br />
+                     <div>
+                        <h3>Season-wise Breakdown:</h3>
+                        <p>
+                           Season 1 (1994–1995): The gang navigates the
+                           complexities of adult life, careers, and
+                           relationships.
+                        </p>
+                        <p>
+                           Season 2 (1995–1996): New relationships bloom, old
+                           ones evolve, and the gang faces various personal and
+                           professional challenges.
+                        </p>
+                        <p>
+                           Season 3 (1996–1997): More romantic entanglements and
+                           hilarious misadventures ensue.
+                        </p>
+                        <p>
+                           Season 4 (1997–1998): Major life changes, weddings,
+                           and the Ross-Rachel rollercoaster.
+                        </p>
+                        <p>
+                           Season 5 (1998–1999): New jobs, new loves, and the
+                           iconic "We were on a break!" moment.
+                        </p>
+                        <p>
+                           Season 6 (1999–2000): Ross's marriage to Emily,
+                           Monica and Chandler's secret romance, and Phoebe's
+                           surrogacy.
+                        </p>
+                        <p>
+                           Season 7 (2000–2001): Monica and Chandler's
+                           engagement, Rachel's career moves, and Joey's acting
+                           gigs.
+                        </p>
+                        <p>
+                           Season 8 (2001–2002): Monica and Chandler's wedding,
+                           Rachel's pregnancy, and the gang's adventures.
+                        </p>
+                        <p>
+                           Season 9 (2002–2003): Joey's spin-off, Emma's birth,
+                           and more twists in the gang's lives.
+                        </p>
+                        <p>
+                           Season 10 (2003–2004): The final season brings
+                           closure to relationships, career paths, and the
+                           beloved Central Perk gang.
+                        </p>
+                     </div>
+                     <br />
+                     <p>
+                        "Friends" became known for its witty humor, memorable
+                        catchphrases, and the enduring bonds of friendship
+                        between its core characters. Its blend of humor,
+                        romance, and relatable life experiences made it one of
+                        the most beloved sitcoms of all time.
+                     </p>
+                  </sl-tab-panel>
+
+                  <sl-tab slot="nav" panel="character-info">
+                     Character Info
+                  </sl-tab>
+                  <sl-tab-panel name="character-info">
+                     I want to understand how important different characters are
+                     when considering 1) the show as a whole and 2) a selected
+                     season. How many episodes do they appear in overall? How
+                     much do they speak in the show overall? (lines or dialogue,
+                     or words could be used here). For the major characters, I
+                     want to be able to see which episodes they they appear in
+                     and which seasons. How much do they speak in these
+                     episodes?
+                  </sl-tab-panel>
+
+                  <sl-tab slot="nav" panel="character-wordclouds">
+                     Character Wordclouds
+                  </sl-tab>
+                  <sl-tab-panel name="character-wordclouds">
+                     Option 1: What do characters say? Given a selected
+                     character, create visual representations and interactions
+                     that help me understand what they tend to say. For this
+                     option, use an encoding designed for text data (such as a
+                     word cloud or another representation we discuss in class).
+                     You can add in additional views, like bar charts and line
+                     charts, but I want to see at least one other encoding that
+                     is designed for text data. I want to see what words do they
+                     use most often, and how frequently they use them. Note-
+                     you'll need to remove 'stem' words, (the, and, if,
+                     was....), to get at the more interesting things they say.
+                     Or you can focus on words that are unique to them- like
+                     that they say more frequently than other characters. I want
+                     to see if they have any sentences or phrases they say
+                     frequently? For instance, if the show is Star Trek The Next
+                     Generation, Captain Picard likely says 'Captain's Log.
+                     Stardate' often. Or if it is Futurama, Prof. Farnsworth
+                     says 'Good news, everyone!' Does what they say tend to
+                     change from season to season? Allow me to select either the
+                     whole show or a season and see what this character says for
+                     the selection.
+                  </sl-tab-panel>
+
+                  <sl-tab slot="nav" panel="character-relations">
+                     Character Relations
+                  </sl-tab>
+                  <sl-tab-panel name="character-relations">
+                     Option 2: Who speaks to each other or appears in scenes
+                     together. For this option, use an encoding designed for
+                     network data (such as an arc diagram or a chord diagram).
+                     You can add in additional views, like bar charts and line
+                     charts, but I want to see at least one other encoding that
+                     is designed for network data. I want to understand which
+                     characters speak most often to or with each other- such as
+                     in the same scene, or in interlaced dialogue with each
+                     other. Some scripts have scene cuts, and you can use that
+                     information to link the characters together. Or you can
+                     look at how often a character's line is close to another
+                     character's line- as an approximation. Note- this could be
+                     a considered a network or a graph, with weighted edges. The
+                     upcoming lecture on graphs and networks, and tutorials on
+                     layouts, will help with this. I want to be able to update
+                     this view by episode and season, to see how this changes
+                     over time.
+                  </sl-tab-panel>
+               </sl-tab-group>
+            </div>
+         </sl-split-panel>
+      </div>
+
+      <div id="tooltip"></div>
+   </body>
+</html>

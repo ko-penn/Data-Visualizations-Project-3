@@ -65,20 +65,23 @@ button:hover {
       width: 100%;
 
       .lhs {
-         height: 100%;
          border-right: 1px solid #ebebeb;
          display: flex;
-         overflow-y: auto;
+         overflow: hidden;
          flex-direction: column;
 
+         #episodes-selector {
+            overflow-y: auto;
+         }
          #characters-selector {
+            min-height: 20em;
+            max-height: 28.5em;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: flex-start;
             padding: 1em;
-            min-height: 0;
-            flex-grow: 1;
 
             sl-details {
                width: 100%;

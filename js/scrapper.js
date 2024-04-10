@@ -115,12 +115,22 @@ const puppeteer = require('puppeteer');
                      });
                   }
 
+                  const delimiter = '<>';
+                  const speakers = speaker
+                     .toLowerCase()
+                     .split('/')
+                     .join(delimiter)
+                     .split(' and ')
+                     .join(delimiter)
+                     .split(' & ')
+                     .join(delimiter)
+                     .split(', ')
+                     .join(delimiter)
+                     .split(delimiter)
+                     .map((s) => toTitleCase(s));
                   speaker = toTitleCase(speaker);
                   currScene.speakers.add(speaker);
-                  currScene.lines.push({
-                     speaker,
-                     line,
-                  });
+                  currScene.lines.push({ speakers, speaker, line });
                }
             }
          }

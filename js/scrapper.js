@@ -65,9 +65,80 @@ const puppeteer = require('puppeteer');
          const scenes = [];
          let currScene = null;
          const elms = Array.from(el.querySelectorAll(':scope > p'));
+
+         function toTitleCase(str) {
+            return str.replace(/\w\S*/g, function (txt) {
+               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+         }
+
+         function addCurrScene(innerText) {
+            if (currScene) {
+               const actualSceneSpeakers = new Set();
+               const allSceneSpeakers = new Set();
+               currScene.lines.forEach((l) => {
+                  allSceneSpeakers.add(...l.speakers);
+               });
+               Array.from(allSceneSpeakers).forEach((s) => {
+                  const lowerS = s.toLowerCase();
+                  if (
+                     lowerS === 'all' ||
+                     lowerS === 'everybody' ||
+                     lowerS === 'everyone' ||
+                     lowerS === 'everyone almost simultaneously except ross'
+                  ) {
+                     allSceneSpeakers.delete(s);
+                  }
+               });
+
+               currScene.lines = currScene.lines.map((l) => {
+                  const quoteFrom = l.quoteFrom.toLowerCase();
+                  if (
+                     quoteFrom === 'all' ||
+                     quoteFrom === 'everybody' ||
+                     quoteFrom === 'everyone'
+                  ) {
+                     allSceneSpeakers.delete(l.quoteFrom);
+                     l.speakers = Array.from(allSceneSpeakers);
+                  } else if (
+                     quoteFrom === 'everyone almost simultaneously except ross'
+                  ) {
+                     allSceneSpeakers.delete(l.quoteFrom);
+                     l.speakers = Array.from(allSceneSpeakers).filter(
+                        (f) => f.toLowerCase() !== 'ross'
+                     );
+                  }
+
+                  if (l.quoteFrom.includes('(')) {
+                     allSceneSpeakers.delete(l.quoteFrom);
+                     let [speaker, ...rest] = l.quoteFrom.split('(');
+                     l.speakers = [toTitleCase(speaker.trim())];
+                  } else if (l.quoteFrom.includes('[')) {
+                     allSceneSpeakers.delete(l.quoteFrom);
+                     let [speaker, ...rest] = l.quoteFrom.split('[');
+                     l.speakers = [toTitleCase(speaker.trim())];
+                  }
+
+                  l.speakers = Array.from(l.speakers);
+
+                  actualSceneSpeakers.add(...l.speakers);
+                  return l;
+               });
+
+               currScene.speakers = Array.from(actualSceneSpeakers);
+               scenes.push(currScene);
+            }
+            currScene = {
+               scene: innerText,
+               speakers: new Set(),
+               lines: [],
+            };
+         }
+
+         let innerText = null;
          for (let j = 0; j < elms.length; j++) {
             const elm = elms[j];
-            const innerText = elm.innerText;
+            innerText = elm.innerText.trim();
 
             const excludedLines = [
                'Commercial Break',
@@ -85,59 +156,38 @@ const puppeteer = require('puppeteer');
             }
 
             if (innerText.startsWith('[Scene:')) {
-               if (currScene) {
-                  currScene.speakers = Array.from(currScene.speakers);
-                  scenes.push(currScene);
-               }
-               currScene = {
-                  scene: innerText,
-                  speakers: new Set(),
-                  lines: [],
-               };
+               addCurrScene(innerText);
             } else if (
                !innerText.startsWith('[') &&
                !innerText.startsWith('(') &&
                !innerText.startsWith('{') &&
                currScene
             ) {
-               let [speaker, ...line] = elm?.innerText?.trim().split(':') ?? [
+               let [quoteFrom, ...line] = elm?.innerText?.trim().split(':') ?? [
                   null,
                   [],
                ];
                line = line.join(':').trim();
-               if (speaker && elm?.innerText?.includes(':')) {
-                  function toTitleCase(str) {
-                     return str.replace(/\w\S*/g, function (txt) {
-                        return (
-                           txt.charAt(0).toUpperCase() +
-                           txt.substr(1).toLowerCase()
-                        );
-                     });
-                  }
-
+               if (quoteFrom && elm?.innerText?.includes(':')) {
                   const delimiter = '<>';
-                  const speakers = speaker
+                  const speakers = quoteFrom
                      .toLowerCase()
                      .split('/')
                      .join(delimiter)
                      .split(' and ')
                      .join(delimiter)
-                     .split(' & ')
+                     .split('&')
                      .join(delimiter)
-                     .split(', ')
+                     .split(',')
                      .join(delimiter)
                      .split(delimiter)
-                     .map((s) => toTitleCase(s));
-                  speaker = toTitleCase(speaker);
-                  currScene.speakers.add(speaker);
-                  currScene.lines.push({ speakers, speaker, line });
+                     .map((s) => toTitleCase(s.trim()));
+
+                  currScene.lines.push({ speakers, quoteFrom, line });
                }
             }
          }
-         if (currScene) {
-            currScene.speakers = Array.from(currScene.speakers);
-            scenes.push(currScene);
-         }
+         addCurrScene(innerText);
 
          return scenes;
       });

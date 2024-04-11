@@ -55,11 +55,11 @@ button:hover {
 
 .content {
    height: 100%;
-   overflow-y: auto;
    flex-grow: 1;
    display: flex;
    justify-content: center;
    align-items: flex-start;
+   overflow: hidden;
    sl-split-panel {
       height: 100%;
       width: 100%;
@@ -104,6 +104,7 @@ button:hover {
       }
       .rhs {
          flex-grow: 1;
+         overflow-y: auto;
 
          sl-tab-group {
             width: 100%;

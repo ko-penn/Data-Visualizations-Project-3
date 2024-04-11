@@ -49,7 +49,7 @@ const puppeteer = require('puppeteer');
    });
 
    // TODO: remove this. it just reduces number of items we need to scrape
-   // episodes = episodes.slice(0, 10);
+   // episodes = episodes.slice(0, 1);
 
    const transcriptPage = await browser.newPage();
    for (let i = 0; i < episodes.length; i++) {
@@ -58,13 +58,25 @@ const puppeteer = require('puppeteer');
          `https://www.livesinabox.com/friends/${episodes[i].href}`
       );
 
+      let source = await transcriptPage.content({
+         waitUntil: 'domcontentloaded',
+      });
+      fs.writeFileSync(
+         `../data/files/${episodes[i].season}-${episodes[i].episode}.html`,
+         source
+      );
+
       const episode = episodes[i];
 
       const body = await transcriptPage.waitForSelector('body');
-      episode.scenes = await body.evaluate((el) => {
+      episode.scenes = await body.evaluate((body, episode) => {
          const scenes = [];
          let currScene = null;
-         const elms = Array.from(el.querySelectorAll(':scope > p'));
+         const scope =
+            episode.season < 10
+               ? ':scope'
+               : 'table > tbody > tr > td > table:nth-child(3) > tbody > tr > td > table > tbody > tr > td:nth-child(2) > table > tbody > tr > td';
+         const elms = Array.from(body.querySelectorAll(`${scope} > p`));
 
          function toTitleCase(str) {
             return str.replace(/\w\S*/g, function (txt) {
@@ -74,21 +86,10 @@ const puppeteer = require('puppeteer');
 
          function addCurrScene(innerText) {
             if (currScene) {
-               const actualSceneSpeakers = new Set();
                const allSceneSpeakers = new Set();
+               const speakersToFilterOut = [];
                currScene.lines.forEach((l) => {
                   allSceneSpeakers.add(...l.speakers);
-               });
-               Array.from(allSceneSpeakers).forEach((s) => {
-                  const lowerS = s.toLowerCase();
-                  if (
-                     lowerS === 'all' ||
-                     lowerS === 'everybody' ||
-                     lowerS === 'everyone' ||
-                     lowerS === 'everyone almost simultaneously except ross'
-                  ) {
-                     allSceneSpeakers.delete(s);
-                  }
                });
 
                currScene.lines = currScene.lines.map((l) => {
@@ -98,34 +99,50 @@ const puppeteer = require('puppeteer');
                      quoteFrom === 'everybody' ||
                      quoteFrom === 'everyone'
                   ) {
-                     allSceneSpeakers.delete(l.quoteFrom);
+                     speakersToFilterOut.push(l.quoteFrom);
                      l.speakers = Array.from(allSceneSpeakers);
                   } else if (
                      quoteFrom === 'everyone almost simultaneously except ross'
                   ) {
-                     allSceneSpeakers.delete(l.quoteFrom);
+                     speakersToFilterOut.push(l.quoteFrom);
                      l.speakers = Array.from(allSceneSpeakers).filter(
                         (f) => f.toLowerCase() !== 'ross'
                      );
                   }
 
                   if (l.quoteFrom.includes('(')) {
-                     allSceneSpeakers.delete(l.quoteFrom);
+                     speakersToFilterOut.push(l.quoteFrom);
                      let [speaker, ...rest] = l.quoteFrom.split('(');
                      l.speakers = [toTitleCase(speaker.trim())];
                   } else if (l.quoteFrom.includes('[')) {
-                     allSceneSpeakers.delete(l.quoteFrom);
+                     speakersToFilterOut.push(l.quoteFrom);
                      let [speaker, ...rest] = l.quoteFrom.split('[');
                      l.speakers = [toTitleCase(speaker.trim())];
                   }
 
                   l.speakers = Array.from(l.speakers);
-
-                  actualSceneSpeakers.add(...l.speakers);
                   return l;
                });
 
-               currScene.speakers = Array.from(actualSceneSpeakers);
+               currScene.lines = currScene.lines.map((l) => {
+                  l.speakers = Array.from(l.speakers).filter(
+                     (s) =>
+                        s &&
+                        !speakersToFilterOut.some(
+                           (s1) => s1.toLowerCase() === s.toLowerCase()
+                        )
+                  );
+                  return l;
+               });
+
+               currScene.speakers = Array.from(
+                  new Set(
+                     currScene.lines.reduce((acc, l) => {
+                        acc.push(...l.speakers);
+                        return acc;
+                     }, [])
+                  )
+               );
                scenes.push(currScene);
             }
             currScene = {
@@ -146,10 +163,12 @@ const puppeteer = require('puppeteer');
                'Closing Credits',
                'Opening Credits',
                'Opening Titles',
+               'This Is Only To Be Put Up On Friends - Greatest Sitcom',
+               'Copyright Issues',
             ];
             if (
-               excludedLines.some(
-                  (l) => l.toLowerCase() === innerText.toLowerCase()
+               excludedLines.some((l) =>
+                  innerText.toLowerCase().includes(l.toLowerCase())
                )
             ) {
                continue;
@@ -180,6 +199,8 @@ const puppeteer = require('puppeteer');
                      .join(delimiter)
                      .split(',')
                      .join(delimiter)
+                     .split('<">')
+                     .join(delimiter)
                      .split(delimiter)
                      .map((s) => toTitleCase(s.trim()));
 
@@ -190,7 +211,7 @@ const puppeteer = require('puppeteer');
          addCurrScene(innerText);
 
          return scenes;
-      });
+      }, episode);
 
       episode.speakers = Array.from(
          new Set(episode.scenes.reduce((acc, s) => [...acc, ...s.speakers], []))

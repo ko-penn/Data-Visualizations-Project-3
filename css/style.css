@@ -87,6 +87,15 @@ button:hover {
                width: 100%;
                height: auto;
                margin-top: 1em;
+               sl-input {
+                  margin: 0.25em 0;
+               }
+               sl-input::part(suffix) {
+                  padding: 0.5em;
+               }
+               sl-checkbox.hide {
+                  display: none;
+               }
             }
             sl-details::part(base) {
                height: 100%;

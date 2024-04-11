@@ -53,6 +53,7 @@ export class CharacterFormBuilder {
          const characterItemCheckbox = document.createElement('sl-checkbox');
          characterItemCheckbox.innerText = `${c.character}`;
          characterItemCheckbox.checked = checked;
+         characterItemCheckbox.setAttribute('data-character', c.character);
          characterItemCheckbox.addEventListener('sl-change', () => {
             this.handleChange();
          });
@@ -72,10 +73,33 @@ export class CharacterFormBuilder {
       const summary = document.createElement('sl-details');
       summary.summary = 'Other Characters';
 
+      const search = document.createElement('sl-input');
+      search.placeholder = 'Search';
+      search.size = 'medium';
+      const icon = document.createElement('sl-icon');
+      icon.name = 'search';
+      icon.slot = 'suffix';
+      search.append(icon);
+      summary.append(search);
+
       const otherCheckboxs = sortedCharacterImportance
          .slice(6, sortedCharacterImportance.length)
          .map((c) => buildCheckbox(c, false));
       summary.append(...otherCheckboxs);
+
+      search.addEventListener('sl-input', () => {
+         otherCheckboxs.forEach((c) => {
+            const character = c.getAttribute('data-character');
+            if (
+               !search.value ||
+               character.toLowerCase().includes(search.value.toLowerCase())
+            ) {
+               c.classList.remove('hide');
+            } else {
+               c.classList.add('hide');
+            }
+         });
+      });
 
       this.form.append(summary);
    }

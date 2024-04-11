@@ -65,10 +65,14 @@ export class CharacterFormBuilder {
       h6.innerText = 'Main Characters';
       this.form.append(h6);
 
+      this.checkboxs = [];
+
       const mainCheckboxs = sortedCharacterImportance
          .slice(0, 6)
          .map((c) => buildCheckbox(c, true));
       this.form.append(...mainCheckboxs);
+
+      this.checkboxs.push(...mainCheckboxs);
 
       const summary = document.createElement('sl-details');
       summary.summary = 'Other Characters';
@@ -86,6 +90,8 @@ export class CharacterFormBuilder {
          .slice(6, sortedCharacterImportance.length)
          .map((c) => buildCheckbox(c, false));
       summary.append(...otherCheckboxs);
+
+      this.checkboxs.push(...otherCheckboxs);
 
       search.addEventListener('sl-input', () => {
          otherCheckboxs.forEach((c) => {

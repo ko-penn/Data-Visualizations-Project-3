@@ -38,6 +38,8 @@ export class EpisodeFormBuilder {
          }
       });
 
+      this.checkboxs = [];
+
       Object.keys(seasons).forEach((k) => {
          const seasonTreeItem = document.createElement('sl-tree-item');
          const seasonItemCheckbox = document.createElement('sl-checkbox');
@@ -49,8 +51,10 @@ export class EpisodeFormBuilder {
          Object.keys(seasons[k]).forEach((e) => {
             const episodeTreeItem = document.createElement('sl-tree-item');
             const episodeItemCheckbox = document.createElement('sl-checkbox');
+            episodeItemCheckbox.setAttribute('data-key', `${k}-${e}`);
             episodeItemCheckbox.innerText = `Episode ${e}: ${seasons[k][e].title}`;
             episodeItemCheckbox.checked = true;
+            this.checkboxs.push(episodeItemCheckbox);
 
             seasonCheckboxs.push(episodeItemCheckbox);
             episodeTreeItem.append(episodeItemCheckbox);

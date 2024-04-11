@@ -49,7 +49,7 @@ const puppeteer = require('puppeteer');
    });
 
    // TODO: remove this. it just reduces number of items we need to scrape
-   // episodes = episodes.slice(0, 10);
+   // episodes = episodes.slice(0, 1);
 
    const transcriptPage = await browser.newPage();
    for (let i = 0; i < episodes.length; i++) {
@@ -58,16 +58,104 @@ const puppeteer = require('puppeteer');
          `https://www.livesinabox.com/friends/${episodes[i].href}`
       );
 
+      let source = await transcriptPage.content({
+         waitUntil: 'domcontentloaded',
+      });
+      fs.writeFileSync(
+         `../data/files/${episodes[i].season}-${episodes[i].episode}.html`,
+         source
+      );
+
       const episode = episodes[i];
 
       const body = await transcriptPage.waitForSelector('body');
-      episode.scenes = await body.evaluate((el) => {
+      episode.scenes = await body.evaluate((body, episode) => {
          const scenes = [];
          let currScene = null;
-         const elms = Array.from(el.querySelectorAll(':scope > p'));
+         const scope =
+            episode.season < 10
+               ? ':scope'
+               : 'table > tbody > tr > td > table:nth-child(3) > tbody > tr > td > table > tbody > tr > td:nth-child(2) > table > tbody > tr > td';
+         const elms = Array.from(body.querySelectorAll(`${scope} > p`));
+
+         function toTitleCase(str) {
+            return str.replace(/\w\S*/g, function (txt) {
+               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+         }
+
+         function addCurrScene(innerText) {
+            if (currScene) {
+               const allSceneSpeakers = new Set();
+               const speakersToFilterOut = [];
+               currScene.lines.forEach((l) => {
+                  allSceneSpeakers.add(...l.speakers);
+               });
+
+               currScene.lines = currScene.lines.map((l) => {
+                  const quoteFrom = l.quoteFrom.toLowerCase();
+                  if (
+                     quoteFrom === 'all' ||
+                     quoteFrom === 'everybody' ||
+                     quoteFrom === 'everyone'
+                  ) {
+                     speakersToFilterOut.push(l.quoteFrom);
+                     l.speakers = Array.from(allSceneSpeakers);
+                  } else if (
+                     quoteFrom === 'everyone almost simultaneously except ross'
+                  ) {
+                     speakersToFilterOut.push(l.quoteFrom);
+                     l.speakers = Array.from(allSceneSpeakers).filter(
+                        (f) => f.toLowerCase() !== 'ross'
+                     );
+                  }
+
+                  if (l.quoteFrom.includes('(')) {
+                     speakersToFilterOut.push(l.quoteFrom);
+                     let [speaker, ...rest] = l.quoteFrom.split('(');
+                     l.speakers = [toTitleCase(speaker.trim())];
+                  } else if (l.quoteFrom.includes('[')) {
+                     speakersToFilterOut.push(l.quoteFrom);
+                     let [speaker, ...rest] = l.quoteFrom.split('[');
+                     l.speakers = [toTitleCase(speaker.trim())];
+                  }
+
+                  l.speakers = Array.from(l.speakers);
+                  return l;
+               });
+
+               currScene.lines = currScene.lines.map((l) => {
+                  l.speakers = Array.from(l.speakers).filter(
+                     (s) =>
+                        s &&
+                        !speakersToFilterOut.some(
+                           (s1) => s1.toLowerCase() === s.toLowerCase()
+                        )
+                  );
+                  return l;
+               });
+
+               currScene.speakers = Array.from(
+                  new Set(
+                     currScene.lines.reduce((acc, l) => {
+                        acc.push(...l.speakers);
+                        return acc;
+                     }, [])
+                  )
+               );
+               scenes.push(currScene);
+            }
+            currScene = {
+               scene: innerText,
+               speakers: new Set(),
+               lines: [],
+            };
+         }
+
+         let innerText = null;
          for (let j = 0; j < elms.length; j++) {
             const elm = elms[j];
-            const innerText = elm.innerText;
+            innerText = elm.innerText.trim();
 
             const excludedLines = [
                'Commercial Break',
@@ -75,62 +163,55 @@ const puppeteer = require('puppeteer');
                'Closing Credits',
                'Opening Credits',
                'Opening Titles',
+               'This Is Only To Be Put Up On Friends - Greatest Sitcom',
+               'Copyright Issues',
             ];
             if (
-               excludedLines.some(
-                  (l) => l.toLowerCase() === innerText.toLowerCase()
+               excludedLines.some((l) =>
+                  innerText.toLowerCase().includes(l.toLowerCase())
                )
             ) {
                continue;
             }
 
             if (innerText.startsWith('[Scene:')) {
-               if (currScene) {
-                  currScene.speakers = Array.from(currScene.speakers);
-                  scenes.push(currScene);
-               }
-               currScene = {
-                  scene: innerText,
-                  speakers: new Set(),
-                  lines: [],
-               };
+               addCurrScene(innerText);
             } else if (
                !innerText.startsWith('[') &&
                !innerText.startsWith('(') &&
                !innerText.startsWith('{') &&
                currScene
             ) {
-               let [speaker, ...line] = elm?.innerText?.trim().split(':') ?? [
+               let [quoteFrom, ...line] = elm?.innerText?.trim().split(':') ?? [
                   null,
                   [],
                ];
                line = line.join(':').trim();
-               if (speaker && elm?.innerText?.includes(':')) {
-                  function toTitleCase(str) {
-                     return str.replace(/\w\S*/g, function (txt) {
-                        return (
-                           txt.charAt(0).toUpperCase() +
-                           txt.substr(1).toLowerCase()
-                        );
-                     });
-                  }
+               if (quoteFrom && elm?.innerText?.includes(':')) {
+                  const delimiter = '<>';
+                  const speakers = quoteFrom
+                     .toLowerCase()
+                     .split('/')
+                     .join(delimiter)
+                     .split(' and ')
+                     .join(delimiter)
+                     .split('&')
+                     .join(delimiter)
+                     .split(',')
+                     .join(delimiter)
+                     .split('<">')
+                     .join(delimiter)
+                     .split(delimiter)
+                     .map((s) => toTitleCase(s.trim()));
 
-                  speaker = toTitleCase(speaker);
-                  currScene.speakers.add(speaker);
-                  currScene.lines.push({
-                     speaker,
-                     line,
-                  });
+                  currScene.lines.push({ speakers, quoteFrom, line });
                }
             }
          }
-         if (currScene) {
-            currScene.speakers = Array.from(currScene.speakers);
-            scenes.push(currScene);
-         }
+         addCurrScene(innerText);
 
          return scenes;
-      });
+      }, episode);
 
       episode.speakers = Array.from(
          new Set(episode.scenes.reduce((acc, s) => [...acc, ...s.speakers], []))

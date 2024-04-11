@@ -33,9 +33,11 @@ export class CharacterFormBuilder {
       rawData.forEach((d) => {
          d.scenes.forEach((s) => {
             s.lines.forEach((l) => {
-               if (!characterImportance[l.speaker])
-                  characterImportance[l.speaker] = 0;
-               characterImportance[l.speaker]++;
+               l.speakers.forEach((speaker) => {
+                  if (!characterImportance[speaker])
+                     characterImportance[speaker] = 0;
+                  characterImportance[speaker]++;
+               });
             });
          });
       });

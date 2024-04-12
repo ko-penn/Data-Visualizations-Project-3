@@ -131,9 +131,7 @@ export class Chord {
          .attr('class', `character-label`)
          .attr('id', (d) => this.uniqueCharacters[d.index])
          .attr('fill', 'none')
-         .transition()
-         .attr(
-            'd',
+         .attr('d', () =>
             d3.arc()({
                outerRadius: this.outerRadius,
                startAngle: 0,
@@ -147,6 +145,9 @@ export class Chord {
          .attr('class', `group-path`)
          .attr('fill', (d) => this.colorScale(this.uniqueCharacters[d.index]))
          .transition()
+         .delay((d, i) => {
+            return i * 5 + 10;
+         })
          .attr('d', this.arc);
       const text = groups
          .selectAll('text')
@@ -179,6 +180,7 @@ export class Chord {
       //    .attr('stop-color', (d) =>
       //       this.colorScale(this.uniqueCharacters[d.index])
       //    );
+
       this.ribbonsGroup
          .selectAll('path')
          .data(chords)
@@ -194,31 +196,55 @@ export class Chord {
                `ribbon-source-${d.source.index} ribbon-target-${d.target.index}`
          )
          .transition()
+         .delay((d, i) => {
+            return i * 5 + 10;
+         })
          .attr('d', this.ribbon);
 
       groups
-         .on('mousemove', (event, k) => {
+         .selectAll('path.group-path')
+         .on('mouseenter', (event, k) => {
             const groupMatch = chords.find(
                (c) => c.source.index === k.index && c.target.index === k.index
             );
             this.mouseOverTooltipCB(event, groupMatch);
+
             d3.selectAll(`.ribbon-source-${k.index}`)
                .transition()
-               .attr('fill-opacity', 1);
-            d3.selectAll(`.ribbon-target-${k.index}`)
-               .transition()
+               .delay((d, i) => {
+                  return i * 5 + 10;
+               })
                .attr('fill-opacity', 1)
                .attr('fill', (d) =>
-                  this.colorScale(this.uniqueCharacters[d.target.index])
+                  this.colorScale(this.uniqueCharacters[d.source.index])
+               );
+            d3.selectAll(`.ribbon-target-${k.index}`)
+               .transition()
+               .delay((d, i) => {
+                  return i * 5 + 10;
+               })
+               .attr('fill-opacity', 1)
+               .attr('fill', (d) =>
+                  this.colorScale(this.uniqueCharacters[k.index])
                );
          })
          .on('mouseleave', (event, k) => {
             this.mouseLeaveTooltipCB();
+
             d3.selectAll(`.ribbon-source-${k.index}`)
                .transition()
-               .attr('fill-opacity', 0.7);
+               .delay((d, i) => {
+                  return i * 5 + 10;
+               })
+               .attr('fill-opacity', 0.7)
+               .attr('fill', (d) =>
+                  this.colorScale(this.uniqueCharacters[d.source.index])
+               );
             d3.selectAll(`.ribbon-target-${k.index}`)
                .transition()
+               .delay((d, i) => {
+                  return i * 5 + 10;
+               })
                .attr('fill-opacity', 0.7)
                .attr('fill', (d) =>
                   this.colorScale(this.uniqueCharacters[d.source.index])
@@ -227,7 +253,7 @@ export class Chord {
 
       this.ribbonsGroup
          .selectAll('path')
-         .on('mousemove', (event, k) => {
+         .on('mouseenter', (event, k) => {
             this.mouseOverTooltipCB(event, k);
             d3.select(event.target).attr('fill-opacity', 1);
          })

@@ -60,6 +60,7 @@ export class Chord {
          .innerRadius(this.innerRadius)
          .outerRadius(this.outerRadius);
       this.ribbon = d3.ribbon().radius(this.innerRadius);
+      this.defs = this.svg.append('defs');
 
       this.colorScale = d3
          .scaleOrdinal(d3.schemeTableau10)
@@ -87,13 +88,22 @@ export class Chord {
 
       data.forEach((d) => {
          d.scenes.forEach((s) => {
+            this.uniqueCharacters.forEach((c, i) => {
+               const match = s.speakers.find((s) => s === c);
+               if (match) {
+                  this.characterMatrix[i][i]++;
+               }
+            });
+
             s.speakers.forEach((c1) => {
                s.speakers.forEach((c2) => {
-                  const index1 = this.uniqueCharacters.indexOf(c1);
-                  const index2 = this.uniqueCharacters.indexOf(c2);
-                  if (index1 >= 0 && index2 >= 0) {
-                     this.characterMatrix[index1][index2]++;
-                     this.characterMatrix[index2][index1]++;
+                  if (c1 !== c2) {
+                     const index1 = this.uniqueCharacters.indexOf(c1);
+                     const index2 = this.uniqueCharacters.indexOf(c2);
+                     if (index1 >= 0 && index2 >= 0) {
+                        this.characterMatrix[index1][index2]++;
+                        this.characterMatrix[index2][index1]++;
+                     }
                   }
                });
             });
@@ -121,6 +131,7 @@ export class Chord {
          .attr('class', `character-label`)
          .attr('id', (d) => this.uniqueCharacters[d.index])
          .attr('fill', 'none')
+         .transition()
          .attr(
             'd',
             d3.arc()({
@@ -135,6 +146,7 @@ export class Chord {
          .join('path')
          .attr('class', `group-path`)
          .attr('fill', (d) => this.colorScale(this.uniqueCharacters[d.index]))
+         .transition()
          .attr('d', this.arc);
       const text = groups
          .selectAll('text')
@@ -149,21 +161,80 @@ export class Chord {
          .attr('startOffset', (d) => d.startAngle * this.outerRadius)
          .text((d) => this.uniqueCharacters[d.index]);
 
+      // const linearGradients = this.defs
+      //    .selectAll('linearGradient')
+      //    .data(chords)
+      //    .join('linearGradient')
+      //    .attr('id', (d) => `${d.source.index}-${d.target.index}`);
+      // linearGradients
+      //    .selectAll('stop')
+      //    .data((d) => {
+      //       return [
+      //          { ...d.source, offset: '0%' },
+      //          { ...d.target, offset: '100%' },
+      //       ];
+      //    })
+      //    .join('stop')
+      //    .attr('offset', (d) => d.offset)
+      //    .attr('stop-color', (d) =>
+      //       this.colorScale(this.uniqueCharacters[d.index])
+      //    );
       this.ribbonsGroup
          .selectAll('path')
          .data(chords)
          .join('path')
          .attr('fill-opacity', 0.7)
-         .attr('d', this.ribbon)
          .attr('fill', (d) =>
             this.colorScale(this.uniqueCharacters[d.source.index])
+         ) //`url(#${d.source.index}-${d.target.index})`)
+         .attr('stroke', 'white')
+         .attr(
+            'class',
+            (d) =>
+               `ribbon-source-${d.source.index} ribbon-target-${d.target.index}`
          )
-         .attr('stroke', 'white');
+         .transition()
+         .attr('d', this.ribbon);
+
+      groups
+         .on('mousemove', (event, k) => {
+            const groupMatch = chords.find(
+               (c) => c.source.index === k.index && c.target.index === k.index
+            );
+            this.mouseOverTooltipCB(event, groupMatch);
+            d3.selectAll(`.ribbon-source-${k.index}`)
+               .transition()
+               .attr('fill-opacity', 1);
+            d3.selectAll(`.ribbon-target-${k.index}`)
+               .transition()
+               .attr('fill-opacity', 1)
+               .attr('fill', (d) =>
+                  this.colorScale(this.uniqueCharacters[d.target.index])
+               );
+         })
+         .on('mouseleave', (event, k) => {
+            this.mouseLeaveTooltipCB();
+            d3.selectAll(`.ribbon-source-${k.index}`)
+               .transition()
+               .attr('fill-opacity', 0.7);
+            d3.selectAll(`.ribbon-target-${k.index}`)
+               .transition()
+               .attr('fill-opacity', 0.7)
+               .attr('fill', (d) =>
+                  this.colorScale(this.uniqueCharacters[d.source.index])
+               );
+         });
 
       this.ribbonsGroup
          .selectAll('path')
-         .on('mousemove', (event, k) => this.mouseOverTooltipCB(event, k))
-         .on('mouseleave', () => this.mouseLeaveTooltipCB());
+         .on('mousemove', (event, k) => {
+            this.mouseOverTooltipCB(event, k);
+            d3.select(event.target).attr('fill-opacity', 1);
+         })
+         .on('mouseleave', (event) => {
+            this.mouseLeaveTooltipCB();
+            d3.select(event.target).attr('fill-opacity', 0.7);
+         });
    }
 
    setWidthAndHeight() {

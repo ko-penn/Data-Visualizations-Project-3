@@ -1,3 +1,4 @@
+import { Chord } from './charts/chord.js';
 import { CharacterFormBuilder } from './helpers/character-form-builder.js';
 import { EpisodeFormBuilder } from './helpers/episode-form-builder.js';
 
@@ -15,6 +16,18 @@ async function main() {
 
    episodeFormBuilder = new EpisodeFormBuilder();
    characterFormBuilder = new CharacterFormBuilder();
+
+   chord = new Chord({
+      parentElementSelector: '#chord-container',
+      id: 'chord',
+   });
+
+   await handleGlobalFilterChange();
+
+   const tabGroup = document.getElementById('tab-group');
+   tabGroup.addEventListener('sl-tab-show', async () => {
+      await handleGlobalFilterChange();
+   });
 }
 
 function processData() {

@@ -120,10 +120,29 @@ button:hover {
             height: 100%;
             sl-tab-panel {
                padding: 0 1em;
+               height: 100%;
             }
+            sl-tab-panel::part(base) {
+               height: 100%;
+               display: flex;
+               flex-direction: column;
+            }
+            sl-tab-panel::part(body) {
+               height: 100%;
+            }
+         }
+         sl-tab-group::part(base) {
+            height: 100%;
+         }
+         sl-tab-group::part(body) {
+            height: 100%;
          }
       }
    }
+}
+
+#chord-container {
+   height: 100%;
 }
 
 #tooltip {

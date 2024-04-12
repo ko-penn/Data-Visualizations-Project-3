@@ -20,7 +20,7 @@ export class CharacterFormBuilder {
    registerChangeCallbacks() {}
 
    handleChange() {
-      handleGlobalFilterChange();
+      handleGlobalFilterChange(true);
    }
 
    buildCharactersToggles() {

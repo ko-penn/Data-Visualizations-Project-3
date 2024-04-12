@@ -63,7 +63,7 @@
             </div>
 
             <div slot="end" class="rhs">
-               <sl-tab-group>
+               <sl-tab-group id="tab-group">
                   <sl-tab slot="nav" panel="general">General</sl-tab>
                   <sl-tab-panel name="general">
                      <div>
@@ -219,23 +219,7 @@
                      Character Relations
                   </sl-tab>
                   <sl-tab-panel name="character-relations">
-                     Option 2: Who speaks to each other or appears in scenes
-                     together. For this option, use an encoding designed for
-                     network data (such as an arc diagram or a chord diagram).
-                     You can add in additional views, like bar charts and line
-                     charts, but I want to see at least one other encoding that
-                     is designed for network data. I want to understand which
-                     characters speak most often to or with each other- such as
-                     in the same scene, or in interlaced dialogue with each
-                     other. Some scripts have scene cuts, and you can use that
-                     information to link the characters together. Or you can
-                     look at how often a character's line is close to another
-                     character's line- as an approximation. Note- this could be
-                     a considered a network or a graph, with weighted edges. The
-                     upcoming lecture on graphs and networks, and tutorials on
-                     layouts, will help with this. I want to be able to update
-                     this view by episode and season, to see how this changes
-                     over time.
+                     <div id="chord-container"></div>
                   </sl-tab-panel>
                </sl-tab-group>
             </div>

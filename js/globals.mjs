@@ -1,5 +1,6 @@
 // ---------- Data variables ----------
 
+import { Chord } from './charts/chord.js';
 import { CharacterFormBuilder } from './helpers/character-form-builder.js';
 import { EpisodeFormBuilder } from './helpers/episode-form-builder.js';
 
@@ -38,26 +39,50 @@ globalThis.episodeFormBuilder = null;
 globalThis.characterFormBuilder = null;
 
 /**
+ * @type {(Chord | null)}
+ * Object for chord chart instance
+ */
+globalThis.chord = null;
+
+/**
  * Updates all global instances of all visualizations
  */
 globalThis.updateAllVis = (dataChange) => {
    if (dataChange) {
       // wordCloud?.updateData(data);
+      chord?.updateData(data);
    } else {
       // wordCloud?.updateVis();
+      chord?.updateVis();
    }
 };
 
 /**
  * Handles refiltering processed data on a global filter change
  */
-let globalFilterChangeTimeout = null;
-globalThis.handleGlobalFilterChange = () => {
-   // Debounce globalFilterChanges so repeat calls done refilter data erroneously
-   if (globalFilterChangeTimeout) clearTimeout(globalFilterChangeTimeout);
-
-   const debounceTimeInMS = 50;
-   globalFilterChangeTimeout = setTimeout(() => {
+const debouncePromise = (fn, ms = 0) => {
+   let timeoutId;
+   const pending = [];
+   return (...args) =>
+      new Promise((res, rej) => {
+         clearTimeout(timeoutId);
+         timeoutId = setTimeout(() => {
+            const currentPending = [...pending];
+            pending.length = 0;
+            Promise.resolve(fn.apply(this, args)).then(
+               (data) => {
+                  currentPending.forEach(({ resolve }) => resolve(data));
+               },
+               (error) => {
+                  currentPending.forEach(({ reject }) => reject(error));
+               }
+            );
+         }, ms);
+         pending.push({ resolve: res, reject: rej });
+      });
+};
+const handleGlobalFilterChangeFunction = (forceDataChange = false) =>
+   new Promise((resolve) => {
       const preData = [...data];
       data = Object.keys(processedData)
          .filter((key) => {
@@ -89,7 +114,12 @@ globalThis.handleGlobalFilterChange = () => {
             });
             return d;
          });
-
-      updateAllVis(JSON.stringify(data) !== JSON.stringify(preData));
-   }, debounceTimeInMS);
-};
+      updateAllVis(
+         JSON.stringify(data) !== JSON.stringify(preData) || forceDataChange
+      );
+      resolve();
+   });
+globalThis.handleGlobalFilterChange = debouncePromise(
+   handleGlobalFilterChangeFunction,
+   50
+);

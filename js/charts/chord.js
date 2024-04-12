@@ -95,17 +95,22 @@ export class Chord {
                }
             });
 
-            s.speakers.forEach((c1) => {
-               s.speakers.forEach((c2) => {
-                  if (c1 !== c2) {
-                     const index1 = this.uniqueCharacters.indexOf(c1);
-                     const index2 = this.uniqueCharacters.indexOf(c2);
-                     if (index1 >= 0 && index2 >= 0) {
-                        this.characterMatrix[index1][index2]++;
-                        this.characterMatrix[index2][index1]++;
-                     }
-                  }
-               });
+            const permutations = [];
+
+            for (let i = 0; i < s.speakers.length; i++) {
+               for (let j = i + 1; j < s.speakers.length; j++) {
+                  permutations.push([s.speakers[i], s.speakers[j]]);
+               }
+            }
+
+            permutations.forEach((p) => {
+               const [speaker1, speaker2] = p;
+               const index1 = this.uniqueCharacters.indexOf(speaker1);
+               const index2 = this.uniqueCharacters.indexOf(speaker2);
+               if (index1 >= 0 && index2 >= 0) {
+                  this.characterMatrix[index1][index2]++;
+                  this.characterMatrix[index2][index1]++;
+               }
             });
          });
       });

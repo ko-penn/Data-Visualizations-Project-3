@@ -136,7 +136,8 @@ export class Chord {
          .attr('class', `character-label`)
          .attr('id', (d) => this.uniqueCharacters[d.index])
          .attr('fill', 'none')
-         .attr('d', () =>
+         .attr(
+            'd',
             d3.arc()({
                outerRadius: this.outerRadius,
                startAngle: 0,
@@ -149,10 +150,6 @@ export class Chord {
          .join('path')
          .attr('class', `group-path`)
          .attr('fill', (d) => this.colorScale(this.uniqueCharacters[d.index]))
-         .transition()
-         .delay((d, i) => {
-            return i * 5 + 10;
-         })
          .attr('d', this.arc);
       const text = groups
          .selectAll('text')
@@ -200,10 +197,6 @@ export class Chord {
             (d) =>
                `ribbon-source-${d.source.index} ribbon-target-${d.target.index}`
          )
-         .transition()
-         .delay((d, i) => {
-            return i * 5 + 10;
-         })
          .attr('d', this.ribbon);
 
       groups

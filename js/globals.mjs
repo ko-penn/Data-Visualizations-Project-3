@@ -42,7 +42,7 @@ globalThis.characterFormBuilder = null;
  * @type {(Chord | null)}
  * Object for chord chart instance
  */
-globalThis.seasonsChord = null;
+globalThis.scenesChord = null;
 /**
  * @type {(Chord | null)}
  * Object for chord chart instance
@@ -55,11 +55,11 @@ globalThis.episodesChord = null;
 globalThis.updateAllVis = (dataChange) => {
    if (dataChange) {
       // wordCloud?.updateData(data);
-      seasonsChord?.updateData(data);
+      scenesChord?.updateData(data);
       episodesChord?.updateData(data);
    } else {
       // wordCloud?.updateVis();
-      seasonsChord?.updateVis();
+      scenesChord?.updateVis();
       episodesChord?.updateVis();
    }
 };

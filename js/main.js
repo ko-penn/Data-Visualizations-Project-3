@@ -17,14 +17,18 @@ async function main() {
    episodeFormBuilder = new EpisodeFormBuilder();
    characterFormBuilder = new CharacterFormBuilder();
 
-   seasonsChord = new Chord({
-      parentElementSelector: '#seasons-chord-container',
-      id: 'season-chord',
+   scenesChord = new Chord({
+      parentElementSelector: '#scenes-chord-container',
+      id: 'scene-chord',
+      groupingKey: 'scene',
    });
    episodesChord = new Chord({
       parentElementSelector: '#episodes-chord-container',
       id: 'episode-chord',
+      groupingKey: 'episode',
    });
+
+   console.log(rawData.filter((d) => !d.speakers.some((s) => s === 'Ross')));
 
    await handleGlobalFilterChange();
 

@@ -42,7 +42,12 @@ globalThis.characterFormBuilder = null;
  * @type {(Chord | null)}
  * Object for chord chart instance
  */
-globalThis.chord = null;
+globalThis.seasonsChord = null;
+/**
+ * @type {(Chord | null)}
+ * Object for chord chart instance
+ */
+globalThis.episodesChord = null;
 
 /**
  * Updates all global instances of all visualizations
@@ -50,10 +55,12 @@ globalThis.chord = null;
 globalThis.updateAllVis = (dataChange) => {
    if (dataChange) {
       // wordCloud?.updateData(data);
-      chord?.updateData(data);
+      seasonsChord?.updateData(data);
+      episodesChord?.updateData(data);
    } else {
       // wordCloud?.updateVis();
-      chord?.updateVis();
+      seasonsChord?.updateVis();
+      episodesChord?.updateVis();
    }
 };
 

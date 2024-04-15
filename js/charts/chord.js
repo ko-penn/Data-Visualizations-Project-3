@@ -207,7 +207,8 @@ export class Chord {
             );
             this.mouseOverTooltipCB(event, groupMatch);
 
-            d3.selectAll(`.ribbon-source-${k.index}`)
+            this.svg
+               .selectAll(`.ribbon-source-${k.index}`)
                .transition()
                .delay((d, i) => {
                   return i * 5 + 10;
@@ -216,7 +217,8 @@ export class Chord {
                .attr('fill', (d) =>
                   this.colorScale(this.uniqueCharacters[d.source.index])
                );
-            d3.selectAll(`.ribbon-target-${k.index}`)
+            this.svg
+               .selectAll(`.ribbon-target-${k.index}`)
                .transition()
                .delay((d, i) => {
                   return i * 5 + 10;
@@ -229,7 +231,8 @@ export class Chord {
          .on('mouseleave', (event, k) => {
             this.mouseLeaveTooltipCB();
 
-            d3.selectAll(`.ribbon-source-${k.index}`)
+            this.svg
+               .selectAll(`.ribbon-source-${k.index}`)
                .transition()
                .delay((d, i) => {
                   return i * 5 + 10;
@@ -238,7 +241,8 @@ export class Chord {
                .attr('fill', (d) =>
                   this.colorScale(this.uniqueCharacters[d.source.index])
                );
-            d3.selectAll(`.ribbon-target-${k.index}`)
+            this.svg
+               .selectAll(`.ribbon-target-${k.index}`)
                .transition()
                .delay((d, i) => {
                   return i * 5 + 10;

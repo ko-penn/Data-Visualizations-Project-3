@@ -141,8 +141,38 @@ button:hover {
    }
 }
 
-#chord-container {
+.chords {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(30em, calc(50% - 1em)));
+   grid-gap: 1em;
    height: 100%;
+   width: 100%;
+
+   .chord-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+
+      i {
+         /* padding: 0 10em; */
+         margin: 0.5em 0;
+      }
+
+      .chord-container {
+         flex-grow: 1;
+         width: 100%;
+      }
+
+      #seasons-chord-container,
+      #episodes-chord-container {
+         height: 100%;
+         min-height: 40vh;
+      }
+   }
 }
 
 #tooltip {

@@ -54,7 +54,11 @@
       </div>
 
       <div class="content">
-         <sl-split-panel position="25" style="--divider-width: 20px">
+         <sl-split-panel
+            id="split-panel"
+            position="25"
+            style="--divider-width: 20px"
+         >
             <sl-icon slot="divider" name="grip-vertical"></sl-icon>
 
             <div slot="start" class="lhs">
@@ -219,7 +223,32 @@
                      Character Relations
                   </sl-tab>
                   <sl-tab-panel name="character-relations">
-                     <div id="chord-container"></div>
+                     <div class="chords">
+                        <div class="chord-section seasons">
+                           <h2>Season Relationships</h2>
+                           <i
+                              >This section shows how many
+                              <strong>seasons</strong> each character shares
+                              with the other characters</i
+                           >
+                           <div
+                              class="chord-container"
+                              id="seasons-chord-container"
+                           ></div>
+                        </div>
+                        <div class="chord-section episodes">
+                           <h2>Episode Relationships</h2>
+                           <i
+                              >This section shows how many
+                              <strong>episodes</strong> each character shares
+                              with the other characters</i
+                           >
+                           <div
+                              class="chord-container"
+                              id="episodes-chord-container"
+                           ></div>
+                        </div>
+                     </div>
                   </sl-tab-panel>
                </sl-tab-group>
             </div>

@@ -17,12 +17,21 @@ async function main() {
    episodeFormBuilder = new EpisodeFormBuilder();
    characterFormBuilder = new CharacterFormBuilder();
 
-   chord = new Chord({
-      parentElementSelector: '#chord-container',
-      id: 'chord',
+   seasonsChord = new Chord({
+      parentElementSelector: '#seasons-chord-container',
+      id: 'season-chord',
+   });
+   episodesChord = new Chord({
+      parentElementSelector: '#episodes-chord-container',
+      id: 'episode-chord',
    });
 
    await handleGlobalFilterChange();
+
+   const splitPanel = document.getElementById('split-panel');
+   splitPanel.addEventListener('sl-reposition', () => {
+      updateAllVis();
+   });
 
    const tabGroup = document.getElementById('tab-group');
    tabGroup.addEventListener('sl-tab-show', async () => {

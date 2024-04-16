@@ -5,6 +5,7 @@ export class Chord {
          parentElement: document.querySelector(_config.parentElementSelector),
          margin: _config.margin || { top: 25, right: 25, bottom: 25, left: 45 },
          id: _config.id,
+         groupingKey: _config.groupingKey || 'scene',
       };
 
       this.innerRadius = 0;
@@ -87,7 +88,10 @@ export class Chord {
       );
 
       data.forEach((d) => {
-         d.scenes.forEach((s) => {
+         const itemToLoop =
+            this.config.groupingKey === 'scene' ? d.scenes : [d];
+
+         itemToLoop.forEach((s) => {
             this.uniqueCharacters.forEach((c, i) => {
                const match = s.speakers.find((s) => s === c);
                if (match) {
@@ -121,7 +125,13 @@ export class Chord {
    updateVis() {
       this.setWidthAndHeight();
 
-      const chords = this.chord(this.characterMatrix);
+      const characterMatrixClone = [...this.characterMatrix.map((c) => [...c])];
+
+      this.uniqueCharacters.forEach((c, i) => {
+         characterMatrixClone[i][i] = 0;
+      });
+
+      const chords = this.chord(characterMatrixClone);
 
       const groups = this.outerGroup
          .selectAll('g')
@@ -202,10 +212,11 @@ export class Chord {
       groups
          .selectAll('path.group-path')
          .on('mouseenter', (event, k) => {
-            const groupMatch = chords.find(
-               (c) => c.source.index === k.index && c.target.index === k.index
-            );
-            this.mouseOverTooltipCB(event, groupMatch);
+            const match = this.characterMatrix[k.index][k.index];
+            this.mouseOverTooltipCB(event, {
+               source: { ...k, value: match },
+               target: { ...k, value: match },
+            });
 
             this.svg
                .selectAll(`.ribbon-source-${k.index}`)
@@ -257,11 +268,11 @@ export class Chord {
          .selectAll('path')
          .on('mouseenter', (event, k) => {
             this.mouseOverTooltipCB(event, k);
-            d3.select(event.target).attr('fill-opacity', 1);
+            d3.select(event.target).transition().attr('fill-opacity', 1);
          })
          .on('mouseleave', (event) => {
             this.mouseLeaveTooltipCB();
-            d3.select(event.target).attr('fill-opacity', 0.7);
+            d3.select(event.target).transition().attr('fill-opacity', 0.7);
          });
    }
 
@@ -321,12 +332,13 @@ export class Chord {
             const targetCharacter = `<strong>${
                this.uniqueCharacters[data.target.index]
             }</strong>`;
-            const totalScenes = data.source.value;
-            const scenesWord = 'scene' + (totalScenes === 1 ? '' : 's');
+            const total = data.source.value;
+            const groupingKeyText =
+               this.config.groupingKey + (total === 1 ? '' : 's');
 
             return targetCharacter === sourceCharacter
-               ? `<p>${sourceCharacter} is in ${totalScenes} ${scenesWord}</p>`
-               : `<p>${sourceCharacter} has ${totalScenes} ${scenesWord} with ${targetCharacter}</p>`;
+               ? `<p>${sourceCharacter} is in ${total} ${groupingKeyText}</p>`
+               : `<p>${sourceCharacter} has ${total} ${groupingKeyText} with ${targetCharacter}</p>`;
          });
    }
 

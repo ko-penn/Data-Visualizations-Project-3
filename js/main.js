@@ -28,8 +28,6 @@ async function main() {
       groupingKey: 'episode',
    });
 
-   console.log(rawData.filter((d) => !d.speakers.some((s) => s === 'Ross')));
-
    await handleGlobalFilterChange();
 
    const splitPanel = document.getElementById('split-panel');

@@ -39,6 +39,16 @@ globalThis.episodeFormBuilder = null;
 globalThis.characterFormBuilder = null;
 
 /**
+ * @type {(Episodes | null)}
+ * Object for episodes line chart instance
+ */
+globalThis.episodesLine = null;
+/**
+ * @type {(Words | null)}
+ * Object for words line chart instance
+ */
+globalThis.wordsLine = null;
+/**
  * @type {(Chord | null)}
  * Object for chord chart instance
  */
@@ -55,10 +65,14 @@ globalThis.episodesChord = null;
 globalThis.updateAllVis = (dataChange) => {
    if (dataChange) {
       // wordCloud?.updateData(data);
+      episodesLine?.updateData(data);
+      wordsLine?.updateData(data);
       scenesChord?.updateData(data);
       episodesChord?.updateData(data);
    } else {
       // wordCloud?.updateVis();
+      episodesLine?.updateVis();
+      wordsLine?.updateVis();
       scenesChord?.updateVis();
       episodesChord?.updateVis();
    }

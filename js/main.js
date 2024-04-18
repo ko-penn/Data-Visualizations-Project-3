@@ -1,4 +1,6 @@
 import { Chord } from './charts/chord.js';
+import { Episodes } from './charts/episodes.js';
+import { Words } from './charts/words.js';
 import { CharacterFormBuilder } from './helpers/character-form-builder.js';
 import { EpisodeFormBuilder } from './helpers/episode-form-builder.js';
 
@@ -17,6 +19,16 @@ async function main() {
    episodeFormBuilder = new EpisodeFormBuilder();
    characterFormBuilder = new CharacterFormBuilder();
 
+   episodesLine = new Episodes({
+      parentElementSelector: '#episodes-line-container',
+      id: 'episodes-line',
+      groupingKey: 'scene',
+   });
+   wordsLine = new Words({
+      parentElementSelector: '#words-line-container',
+      id: 'words-line',
+      groupingKey: 'scene',
+   });
    scenesChord = new Chord({
       parentElementSelector: '#scenes-chord-container',
       id: 'scene-chord',

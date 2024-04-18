@@ -21,48 +21,10 @@ export class EpisodeFormBuilder {
 
    handleChange() {
       handleGlobalFilterChange();
-
-      const totalSeasonCounts = {};
-      const totalSelectedSeasonsCounts = {};
-      rawData.forEach((d) => {
-         const { season, episode } = d;
-         if (!totalSelectedSeasonsCounts[season]) {
-            totalSelectedSeasonsCounts[season] = new Set();
-         }
-         if (!totalSeasonCounts[season]) {
-            totalSeasonCounts[season] = new Set();
-         }
-         totalSeasonCounts[season].add(episode);
-      });
-
-      this.checkboxs.forEach((c) => {
-         if (c.checked) {
-            const season = c.getAttribute('data-season');
-            const episode = c.getAttribute('data-episode');
-            if (!totalSelectedSeasonsCounts[season]) {
-               totalSelectedSeasonsCounts[season] = new Set();
-            }
-            totalSelectedSeasonsCounts[season].add(episode);
-         }
-      });
-
-      let totalCount = 0;
-      Object.keys(totalSelectedSeasonsCounts).forEach((k) => {
-         const item = this.seasonItemPills[k];
-         const seasonCount = totalSelectedSeasonsCounts[k].size;
-         item.innerText = seasonCount;
-         totalCount += seasonCount;
-         if (totalSeasonCounts[k].size === seasonCount) {
-            item.variant = 'success';
-         } else {
-            item.variant = 'neutral';
-         }
-      });
-
-      this.tooltipInfoBadge.innerText = totalCount;
+      this.updateTooltipBadges();
    }
 
-   buildEpisodesTree() {
+   async buildEpisodesTree() {
       const h3 = document.createElement('h3');
       h3.style.padding = '.5em';
       h3.innerText = 'Episodes';
@@ -78,6 +40,7 @@ export class EpisodeFormBuilder {
       this.form.append(header);
 
       const tree = document.createElement('sl-tree');
+      tree.selection = 'multiple';
       const seasons = {};
       rawData.forEach((d) => {
          if (seasons[d.season]) {
@@ -87,54 +50,28 @@ export class EpisodeFormBuilder {
          }
       });
 
-      this.checkboxs = [];
+      this.treeItems = [];
 
-      Object.keys(seasons).forEach((k) => {
+      for (let k of Object.keys(seasons)) {
          const seasonTreeItem = document.createElement('sl-tree-item');
-         const seasonItemCheckbox = document.createElement('sl-checkbox');
-         seasonItemCheckbox.innerText = `Season ${k}`;
-         seasonItemCheckbox.checked = true;
+         seasonTreeItem.innerText = `Season ${k}`;
+         seasonTreeItem.selected = true;
 
-         seasonTreeItem.append(seasonItemCheckbox);
-         const seasonCheckboxs = [];
          Object.keys(seasons[k]).forEach((e) => {
             const episodeTreeItem = document.createElement('sl-tree-item');
-            const episodeItemCheckbox = document.createElement('sl-checkbox');
-            episodeItemCheckbox.setAttribute('data-key', `${k}-${e}`);
-            episodeItemCheckbox.setAttribute('data-season', k);
-            episodeItemCheckbox.setAttribute('data-episode', e);
-            episodeItemCheckbox.innerText = `Episode ${e}: ${seasons[k][e].title}`;
-            episodeItemCheckbox.checked = true;
-            this.checkboxs.push(episodeItemCheckbox);
+            episodeTreeItem.innerText = `Episode ${e}: ${seasons[k][e].title}`;
+            episodeTreeItem.setAttribute('data-key', `${k}-${e}`);
+            episodeTreeItem.setAttribute('data-season', k);
+            episodeTreeItem.setAttribute('data-episode', e);
+            episodeTreeItem.selected = true;
 
-            seasonCheckboxs.push(episodeItemCheckbox);
-            episodeTreeItem.append(episodeItemCheckbox);
+            this.treeItems.push(episodeTreeItem);
             seasonTreeItem.append(episodeTreeItem);
-
-            episodeItemCheckbox.addEventListener('sl-change', () => {
-               if (
-                  seasonItemCheckbox.checked &&
-                  seasonCheckboxs.some((c) => !c.checked)
-               ) {
-                  seasonItemCheckbox.checked = false;
-               } else if (
-                  !seasonItemCheckbox.checked &&
-                  !seasonCheckboxs.some((c) => !c.checked)
-               ) {
-                  seasonItemCheckbox.checked = true;
-               }
-               this.handleChange();
-            });
-         });
-
-         seasonItemCheckbox.addEventListener('sl-change', () => {
-            seasonCheckboxs.forEach((c) => {
-               c.checked = seasonItemCheckbox.checked;
-               this.handleChange();
-            });
          });
          tree.append(seasonTreeItem);
-      });
+      }
+
+      tree.addEventListener('sl-selection-change', () => this.handleChange());
 
       this.form.append(tree);
    }
@@ -176,5 +113,46 @@ export class EpisodeFormBuilder {
 
       this.episodesTotalTooltipContent.append(this.episodesTotalTooltipMenu);
       this.episodesTotalTooltip.append(this.episodesTotalTooltipContent);
+   }
+
+   updateTooltipBadges() {
+      const totalSeasonCounts = {};
+      const totalSelectedSeasonsCounts = {};
+      rawData.forEach((d) => {
+         const { season, episode } = d;
+         if (!totalSelectedSeasonsCounts[season]) {
+            totalSelectedSeasonsCounts[season] = new Set();
+         }
+         if (!totalSeasonCounts[season]) {
+            totalSeasonCounts[season] = new Set();
+         }
+         totalSeasonCounts[season].add(episode);
+      });
+
+      this.treeItems.forEach((c) => {
+         if (c.selected) {
+            const season = c.getAttribute('data-season');
+            const episode = c.getAttribute('data-episode');
+            if (!totalSelectedSeasonsCounts[season]) {
+               totalSelectedSeasonsCounts[season] = new Set();
+            }
+            totalSelectedSeasonsCounts[season].add(episode);
+         }
+      });
+
+      let totalCount = 0;
+      Object.keys(totalSelectedSeasonsCounts).forEach((k) => {
+         const item = this.seasonItemPills[k];
+         const seasonCount = totalSelectedSeasonsCounts[k].size;
+         item.innerText = seasonCount;
+         totalCount += seasonCount;
+         if (totalSeasonCounts[k].size === seasonCount) {
+            item.variant = 'success';
+         } else {
+            item.variant = 'neutral';
+         }
+      });
+
+      this.tooltipInfoBadge.innerText = totalCount;
    }
 }

@@ -21,24 +21,7 @@ export class CharacterFormBuilder {
 
    handleChange() {
       handleGlobalFilterChange(true);
-
-      let totalMainCharactersSelected = 0;
-      let totalOtherCharactersSelected = 0;
-      this.checkboxs.forEach((c) => {
-         if (c.checked) {
-            const isMainCharacter = c.getAttribute('data-is-main-character');
-            if (isMainCharacter) {
-               totalMainCharactersSelected++;
-            } else {
-               totalOtherCharactersSelected++;
-            }
-         }
-      });
-
-      this.mainCharacterTotalPill.innerText = totalMainCharactersSelected;
-      this.otherCharacterTotalPill.innerText = totalOtherCharactersSelected;
-      this.tooltipInfoBadge.innerText =
-         totalMainCharactersSelected + totalOtherCharactersSelected;
+      this.updateTooltipBadges();
    }
 
    buildCharactersToggles() {
@@ -176,5 +159,25 @@ export class CharacterFormBuilder {
 
       this.characterTotalTooltipContent.append(this.characterTotalTooltipMenu);
       this.characterTotalTooltip.append(this.characterTotalTooltipContent);
+   }
+
+   updateTooltipBadges() {
+      let totalMainCharactersSelected = 0;
+      let totalOtherCharactersSelected = 0;
+      this.checkboxs.forEach((c) => {
+         if (c.checked) {
+            const isMainCharacter = c.getAttribute('data-is-main-character');
+            if (isMainCharacter) {
+               totalMainCharactersSelected++;
+            } else {
+               totalOtherCharactersSelected++;
+            }
+         }
+      });
+
+      this.mainCharacterTotalPill.innerText = totalMainCharactersSelected;
+      this.otherCharacterTotalPill.innerText = totalOtherCharactersSelected;
+      this.tooltipInfoBadge.innerText =
+         totalMainCharactersSelected + totalOtherCharactersSelected;
    }
 }

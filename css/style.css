@@ -12,6 +12,10 @@ body {
    flex-direction: column;
 }
 
+:root {
+   --sl-tooltip-padding: var(--sl-spacing-2x-small) var(--sl-spacing-2x-small) !important;
+}
+
 button {
    outline: none;
    padding: 1em;
@@ -179,7 +183,6 @@ button:hover {
 #tooltip {
    position: fixed;
    opacity: 0;
-   /* transition: .3s; */
    background: #fff;
    box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
    border: 1px solid #ddd;

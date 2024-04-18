@@ -108,8 +108,8 @@ const handleGlobalFilterChangeFunction = (forceDataChange = false) =>
       data = Object.keys(processedData)
          .filter((key) => {
             if (
-               episodeFormBuilder.checkboxs.some(
-                  (c) => c.getAttribute('data-key') === key && c.checked
+               episodeFormBuilder.treeItems.some(
+                  (c) => c.getAttribute('data-key') === key && c.selected
                )
             ) {
                return true;

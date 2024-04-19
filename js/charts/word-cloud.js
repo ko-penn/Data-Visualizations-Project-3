@@ -17,12 +17,15 @@ export class WordCloud {
    initVis() {
       const idInParent = document.querySelector(this.config.id);
       if (!idInParent) {
+         
          this.mainDiv = d3
             .select(this.config.parentElementSelector)
             .append('div')
             .style('height', '100%')
             .style('width', '100%')
             .attr('id', this.config.id);
+
+            this.wordCloudCharacterName = this.mainDiv.append('h2').text(this.character);
       } else {
          this.mainDiv = d3.select(
             `${this.config.parentElementSelector} #${this.config.id}`
@@ -56,6 +59,7 @@ export class WordCloud {
    }
 
    updateData(data) {
+
       let characterWords = "";
       data.forEach((d) =>{
          
@@ -63,7 +67,7 @@ export class WordCloud {
             d.scenes.forEach((s) =>{
                if(s.speakers.includes(this.character)){
                   s.lines.forEach((l) => {
-                     if(l.quoteFrom === this.character){
+                     if(l.speakers.includes(this.character)){
                         characterWords = characterWords + " " + l.line;
                      }
                   })
@@ -222,7 +226,6 @@ export class WordCloud {
          });
       }
       
-      console.log(wordCounts)
 
       const keys = Object.keys(wordCounts);
       const maxNumOfWords = 100;

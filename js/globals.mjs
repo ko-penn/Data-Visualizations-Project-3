@@ -60,23 +60,23 @@ globalThis.scenesChord = null;
  */
 globalThis.episodesChord = null;
 /**
- * @type {(WordCloud | null)}
+ * @type {(WordCloud[] | null)}
  * Object for chord chart instance
  */
-globalThis.wordCloud = null;
+globalThis.wordClouds = [];
 
 /**
  * Updates all global instances of all visualizations
  */
 globalThis.updateAllVis = (dataChange) => {
    if (dataChange) {
-      wordCloud?.updateData(data);
+      wordClouds.forEach(c => c?.updateData(data));
       episodesLine?.updateData(data);
       wordsLine?.updateData(data);
       scenesChord?.updateData(data);
       episodesChord?.updateData(data);
    } else {
-      wordCloud?.updateVis();
+      wordClouds?.forEach(c => c.updateVis());
       episodesLine?.updateVis();
       wordsLine?.updateVis();
       scenesChord?.updateVis();

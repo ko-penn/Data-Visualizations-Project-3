@@ -48,8 +48,17 @@ async function main() {
             .map((c) => c.getAttribute('data-character'))
       )
    );
+
+   // let unCheckedCharacters = Array.from(
+   //    new Set(
+   //       characterFormBuilder.checkboxs
+   //          .filter((c) => !c.checked)
+   //          .map((c) => c.getAttribute('data-character'))
+   //    )
+   // );
    
-   uniqueCharacters.forEach(characterWordClouds);
+   // console.log(unCheckedCharacters);
+   uniqueCharacters.forEach((c, i) => characterWordClouds(c,i));
 
    await handleGlobalFilterChange();
 
@@ -73,13 +82,13 @@ function processData() {
    });
 }
 
-function characterWordClouds(character){
-   wordCloud = new WordCloud({
+function characterWordClouds(character, index){
+   wordClouds.push(new WordCloud({
       parentElementSelector: '#character-word-cloud-container',
       id: character + '-word-cloud',
    },
    character,
-)
+))
 
 
 }

@@ -1,12 +1,12 @@
 export class WordCloud {
-   constructor(_config, _data) {
+   constructor(_config, _character) {
       this.config = {
          parentElementSelector: _config.parentElementSelector,
          parentElement: document.querySelector(_config.parentElementSelector),
          margin: _config.margin || { top: 25, right: 25, bottom: 25, left: 45 },
          id: _config.id,
       };
-      this.data = _data;
+      this.character= _character;
       this.initVis();
 
       window.addEventListener('resize', () => {
@@ -56,7 +56,22 @@ export class WordCloud {
    }
 
    updateData(data) {
-      this.data = data;
+      let characterWords = "";
+      data.forEach((d) =>{
+         
+         if (d.speakers.includes(this.character)){
+            d.scenes.forEach((s) =>{
+               if(s.speakers.includes(this.character)){
+                  s.lines.forEach((l) => {
+                     if(l.quoteFrom === this.character){
+                        characterWords = characterWords + " " + l.line;
+                     }
+                  })
+               }
+            })
+         }
+      })
+      this.data = characterWords;
       this.updateVis();
    }
 
@@ -195,8 +210,8 @@ export class WordCloud {
       ];
       const wordCounts = {};
 
-      this.data.forEach((d) => {
-         d.description.split(' ').forEach((word) => {
+      if(this.data){
+         this.data.split(' ').forEach((word) => {
             const word_clean = word.split('.').join('').toLowerCase();
             if (!stopwords.includes(word_clean)) {
                if (!wordCounts[word_clean]) {
@@ -205,7 +220,9 @@ export class WordCloud {
                wordCounts[word_clean]++;
             }
          });
-      });
+      }
+      
+      console.log(wordCounts)
 
       const keys = Object.keys(wordCounts);
       const maxNumOfWords = 100;

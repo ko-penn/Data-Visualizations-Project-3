@@ -1,6 +1,7 @@
 // ---------- Data variables ----------
 
 import { Chord } from './charts/chord.js';
+import { WordCloud } from './charts/word-cloud.js';
 import { CharacterFormBuilder } from './helpers/character-form-builder.js';
 import { EpisodeFormBuilder } from './helpers/episode-form-builder.js';
 
@@ -58,19 +59,24 @@ globalThis.scenesChord = null;
  * Object for chord chart instance
  */
 globalThis.episodesChord = null;
+/**
+ * @type {(WordCloud | null)}
+ * Object for chord chart instance
+ */
+globalThis.wordCloud = null;
 
 /**
  * Updates all global instances of all visualizations
  */
 globalThis.updateAllVis = (dataChange) => {
    if (dataChange) {
-      // wordCloud?.updateData(data);
+      wordCloud?.updateData(data);
       episodesLine?.updateData(data);
       wordsLine?.updateData(data);
       scenesChord?.updateData(data);
       episodesChord?.updateData(data);
    } else {
-      // wordCloud?.updateVis();
+      wordCloud?.updateVis();
       episodesLine?.updateVis();
       wordsLine?.updateVis();
       scenesChord?.updateVis();

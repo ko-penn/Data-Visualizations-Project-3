@@ -1,5 +1,6 @@
 import { Chord } from './charts/chord.js';
 import { Episodes } from './charts/episodes.js';
+import { WordCloud } from './charts/word-cloud.js';
 import { Words } from './charts/words.js';
 import { CharacterFormBuilder } from './helpers/character-form-builder.js';
 import { EpisodeFormBuilder } from './helpers/episode-form-builder.js';
@@ -40,6 +41,16 @@ async function main() {
       groupingKey: 'episode',
    });
 
+   let uniqueCharacters = Array.from(
+      new Set(
+         characterFormBuilder.checkboxs
+            .filter((c) => c.checked)
+            .map((c) => c.getAttribute('data-character'))
+      )
+   );
+   
+   uniqueCharacters.forEach(characterWordClouds);
+
    await handleGlobalFilterChange();
 
    const splitPanel = document.getElementById('split-panel');
@@ -60,4 +71,15 @@ function processData() {
       const key = processDataKeyBuilder(d);
       processedData[key] = d;
    });
+}
+
+function characterWordClouds(character){
+   wordCloud = new WordCloud({
+      parentElementSelector: '#character-word-cloud-container',
+      id: character + '-word-cloud',
+   },
+   character,
+)
+
+
 }

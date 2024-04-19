@@ -86,7 +86,6 @@ export class Chord {
          { length: this.uniqueCharacters.length },
          () => Array.from({ length: this.uniqueCharacters.length }, () => 0)
       );
-
       data.forEach((d) => {
          const itemToLoop =
             this.config.groupingKey === 'scene' ? d.scenes : [d];
@@ -118,7 +117,7 @@ export class Chord {
             });
          });
       });
-
+      
       this.updateVis();
    }
 

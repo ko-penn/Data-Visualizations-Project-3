@@ -102,6 +102,9 @@ export class Episodes {
  
     updateVis() {
         this.setWidthAndHeight();
+
+      // TODO: remove this just adding it to get around console errors preventing chord graphs from rendering properly
+        const sumstat = []
         //https://d3-graph-gallery.com/graph/line_several_group.html
         this.svg.selectAll(".line")
             .data(this.characterEpisodes)

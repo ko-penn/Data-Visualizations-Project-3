@@ -22,12 +22,10 @@ async function main() {
    episodesLine = new Episodes({
       parentElementSelector: '#episodes-line-container',
       id: 'episodes-line',
-      groupingKey: 'scene',
    });
    wordsLine = new Words({
       parentElementSelector: '#words-line-container',
       id: 'words-line',
-      groupingKey: 'scene',
    });
    scenesChord = new Chord({
       parentElementSelector: '#scenes-chord-container',

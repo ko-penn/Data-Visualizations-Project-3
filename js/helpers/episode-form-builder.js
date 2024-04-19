@@ -12,9 +12,9 @@ export class EpisodeFormBuilder {
    buildForm() {
       this.buildEpisodesTree();
       this.registerChangeCallbacks();
-      requestAnimationFrame(() => {
+      setTimeout(() => {
          this.handleChange();
-      });
+      }, 500);
    }
 
    registerChangeCallbacks() {}

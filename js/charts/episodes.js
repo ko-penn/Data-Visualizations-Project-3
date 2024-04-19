@@ -1,23 +1,26 @@
 export class Episodes {
     constructor(_config) {
-       this.config = {
-          parentElementSelector: _config.parentElementSelector,
-          parentElement: document.querySelector(_config.parentElementSelector),
-          margin: _config.margin || { top: 25, right: 25, bottom: 25, left: 45 },
-          id: _config.id,
-          groupingKey: _config.groupingKey || 'scene',
-       };
+        this.config = {
+            parentElementSelector: _config.parentElementSelector,
+            parentElement: document.querySelector(_config.parentElementSelector),
+            margin: _config.margin || { top: 25, right: 25, bottom: 25, left: 45 },
+            id: _config.id,
+            groupingKey: _config.groupingKey || 'scene',
+        };
  
-       this.innerRadius = 0;
-       this.outerRadius = 0;
-       this.width = 0;
-       this.height = 0;
+        this.width = 0;
+        this.height = 0;
+        this.xAxisTitle = '';
+        this.yAxisTitle = '';
+        this.characterEpisodes = [];
+        this.activeSeasons = [];
  
-       this.initVis();
+        this.initVis();
  
-       window.addEventListener('resize', () => {
-          this.updateVis();
-       });
+        window.addEventListener('resize', () => {
+            this.setWidthAndHeight();
+            this.updateVis();
+        });
     }
  
     initVis() {
@@ -35,27 +38,52 @@ export class Episodes {
             );
         }
 
+        this.setWidthAndHeight();
+
+        this.mainDiv
+            .append("p")
+            .attr("class", "y-axis-title")
+            .style("grid-area", "y")
+            .style("writing-mode", "vertical-rl")
+            .style("text-orientation", "mixed")
+            .style("text-align", "center")
+            .style("transform", "rotate(180deg)")
+            .text(this.yAxisTitle);
+  
+        this.mainDiv
+            .append("p")
+            .attr("class", "x-axis-title")
+            .style("grid-area", "x")
+            .style("text-align", "center")
+            .text(this.xAxisTitle);
+
         this.svg = this.mainDiv
             .append('svg')
             .attr('width', '100%')
             .attr('height', '100%');
 
-        this.setWidthAndHeight();
-
         this.x = d3.scaleLinear()
             .domain([1, 10])
             .range([ 0, this.width ]);
+
+        this.xAxis = d3.axisBottom().scale(this.x);
+
+        this.xAxisG = this.svg.append('g').attr("transform", "translate(0," + this.height + ")")
         
-        this.xAxisG = this.svg.append("g")
+        /*this.xAxisG = this.svg.append("g")
             .attr("transform", "translate(0," + this.height + ")")
-            .call(d3.axisBottom(this.x).ticks(5));
+            .call(d3.axisBottom(this.x).ticks(5));*/
         
         this.y = d3.scaleLinear()
             .domain([0, 30])
             .range([ this.height, 0 ]);
+
+        this.yAxis = d3.axisLeft().scale(this.y);
+
+        this.yAxisG = this.svg.append('g');
         
-        this.yAxisG = this.svg.append("g")
-            .call(d3.axisLeft(this.y));
+        /*this.yAxisG = this.svg.append("g")
+            .call(d3.axisLeft(this.y));*/
 
         this.colorScale = d3
         .scaleOrdinal(d3.schemeTableau10)
@@ -63,6 +91,7 @@ export class Episodes {
             ['Rachel','Ross','Chandler','Monica','Joey','Phoebe']
         );
 
+        this.updateVis();
     }
 
     updateData(data) {
@@ -74,13 +103,15 @@ export class Episodes {
                   .map((c) => c.getAttribute('data-character'))
             )
         );
+        //console.log(this.uniqueCharacters);
         this.activeSeasons = Array.from(
             new Set(
                episodeFormBuilder.treeItems
-                  .filter((c) => c.selected)
+                  .filter((c) => c.selected === true)
                   .map((c) => c.getAttribute('data-season'))
             )
         );
+        //console.log(this.activeSeasons);
         this.characterEpisodes = [];
         this.uniqueCharacters.forEach((d) => {
             this.characterEpisodes.push({key: d,values:[]});
@@ -95,21 +126,33 @@ export class Episodes {
                 }
             })
         });
-
         //console.log(this.characterEpisodes);
         this.updateVis();
     }
  
     updateVis() {
         this.setWidthAndHeight();
+    
+        let max = -1;
+        this.characterEpisodes.forEach((d) => {
+            d.values.forEach((e) => {
+                if(+e.episodes > max){
+                    max = +e.episodes;
+                }
+            })
+        })
+        //console.log('max: '+max);
 
-      // TODO: remove this just adding it to get around console errors preventing chord graphs from rendering properly
-        const sumstat = []
+        //console.log('updateVis() width: '+this.width+' height: '+this.height);
+        this.x.domain(d3.extent(this.activeSeasons)).range([0,this.width]);
+        this.y.domain([0,max]).range([this.height,0]);
+
         //https://d3-graph-gallery.com/graph/line_several_group.html
-        this.svg.selectAll(".line")
+        //console.log('updateVis: '+ this.characterEpisodes);
+        if(this.characterEpisodes != []){
+            this.svg.selectAll(".line")
             .data(this.characterEpisodes)
-            .enter()
-            .append("path")
+            .join("path")
             .attr("fill", "none")
             .attr("stroke", (d) => this.colorScale(d.key) )
             .attr("stroke-width", 1.5)
@@ -125,18 +168,13 @@ export class Episodes {
                     .y((d) => (this.y(+d.episodes)))
                 (d.values)}
             )*/
-    }
-
-    xScale(value){
-        return(this.x(value))
-    }
-
-    yScale(value){
-        return(this.y(value))
+        }
+        this.xAxisG.call(this.xAxis);
+        this.yAxisG.call(this.yAxis);
     }
 
     setWidthAndHeight() {
-        if (this.svg?.node()) {
+        /*if (this.svg?.node()) {
             this.width =
                this.svg.node().getBoundingClientRect().width -
                this.config.margin.left -
@@ -145,6 +183,25 @@ export class Episodes {
                this.svg.node().getBoundingClientRect().height -
                this.config.margin.top -
                this.config.margin.bottom;
+        }*/
+        const svg = document.getElementById(this.config.id)?.querySelector("svg");
+        if (svg) {
+            this.width =
+                svg.getBoundingClientRect().width -
+                this.config.margin.left -
+                this.config.margin.right;
+            this.height =
+                svg.getBoundingClientRect().height -
+                this.config.margin.top -
+                this.config.margin.bottom;
+            //console.log('setWidthAndHeight() width: '+this.width+' height: '+this.height);
+
+            this.xAxisG?.attr("transform", `translate(0,${this.height})`);
+
+            //this.clipPath?.attr("width", this.width).attr("height", this.height);
+
+            this.x?.range([0, this.width]);
+            this.y?.range([this.height, 0]);
         }
     }
 

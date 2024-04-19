@@ -51,7 +51,7 @@ export class Episodes {
             .call(d3.axisBottom(this.x).ticks(5));
         
         this.y = d3.scaleLinear()
-            .domain([0, 10000])
+            .domain([0, 30])
             .range([ this.height, 0 ]);
         
         this.yAxisG = this.svg.append("g")
@@ -60,9 +60,7 @@ export class Episodes {
         this.colorScale = d3
         .scaleOrdinal(d3.schemeTableau10)
         .domain(
-            characterFormBuilder.checkboxs.map((c) =>
-                c.getAttribute('data-character')
-            )
+            ['Rachel','Ross','Chandler','Monica','Joey','Phoebe']
         );
 
     }
@@ -76,16 +74,29 @@ export class Episodes {
                   .map((c) => c.getAttribute('data-character'))
             )
         );
-        this.characterLines = [];
-        this.uniqueCharacters.forEach((d) => this.characterLines.push(0));
-        data.forEach((d) => {d.scenes.forEach((e) => {e.lines.forEach((f) => {
-            if(this.uniqueCharacters.includes(f.quoteFrom)){
-                this.characterLines[this.uniqueCharacters.indexOf(f.quoteFrom)] = this.characterLines[this.uniqueCharacters.indexOf(f.quoteFrom)] + 1;
-            }
-            }
-        )})});
-        //console.log(this.uniqueCharacters);
-        //console.log(this.characterLines);
+        this.activeSeasons = Array.from(
+            new Set(
+               episodeFormBuilder.treeItems
+                  .filter((c) => c.selected)
+                  .map((c) => c.getAttribute('data-season'))
+            )
+        );
+        this.characterEpisodes = [];
+        this.uniqueCharacters.forEach((d) => {
+            this.characterEpisodes.push({key: d,values:[]});
+            this.activeSeasons.forEach((d) => {
+                this.characterEpisodes[this.characterEpisodes.length-1].values.push({season:d,episodes:0})
+            })
+            data.forEach((e) => {
+                if(e.speakers.includes(this.characterEpisodes[this.characterEpisodes.length-1].key)){
+                    let currentCharacter = (this.characterEpisodes.length-1);
+                    let currentSeason = (this.activeSeasons.indexOf(e.season.toString()));
+                    this.characterEpisodes[currentCharacter].values[currentSeason].episodes = this.characterEpisodes[currentCharacter].values[currentSeason].episodes + 1;
+                }
+            })
+        });
+
+        //console.log(this.characterEpisodes);
         this.updateVis();
     }
  
@@ -93,19 +104,32 @@ export class Episodes {
         this.setWidthAndHeight();
         //https://d3-graph-gallery.com/graph/line_several_group.html
         this.svg.selectAll(".line")
-            .data(sumstat)
+            .data(this.characterEpisodes)
             .enter()
             .append("path")
             .attr("fill", "none")
-            .attr("stroke", function(d){ return color(d.key) })
+            .attr("stroke", (d) => this.colorScale(d.key) )
             .attr("stroke-width", 1.5)
             .attr("d", function(d){
                 return d3.line()
-                    .x(function(d) { return x(d.year); })
-                    .y(function(d) { return y(+d.n); })
+                    .x((d) => (episodesLine.x(d.season)))
+                    .y((d) => (episodesLine.y(+d.episodes)))
                 (d.values)}
-        )
+            )
+            /*.attr("d", function(d){
+                return d3.line()
+                    .x((d) => (this.x(d.season)))
+                    .y((d) => (this.y(+d.episodes)))
+                (d.values)}
+            )*/
+    }
 
+    xScale(value){
+        return(this.x(value))
+    }
+
+    yScale(value){
+        return(this.y(value))
     }
 
     setWidthAndHeight() {

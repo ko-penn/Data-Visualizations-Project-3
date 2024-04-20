@@ -145,6 +145,32 @@ button:hover {
    }
 }
 
+#line-charts-container {
+   display: grid;
+   gap: 20px;
+   width: 100%;
+   height: 100%;
+}
+
+#episodes-line-container {
+   grid-column-start: 1;
+   grid-column-end: 2;
+   grid-row-start: 1;
+   grid-row-end: 2;
+}
+#words-line-container {
+   grid-column-start: 2;
+   grid-column-end: 3;
+   grid-row-start: 1;
+   grid-row-end: 2;
+}
+#stacked-lines-container {
+   grid-column-start: 1;
+   grid-column-end: 3;
+   grid-row-start: 2;
+   grid-row-end: 4;
+}
+
 .chords {
    display: grid;
    grid-template-columns: repeat(auto-fit, minmax(30em, calc(50% - 1em)));

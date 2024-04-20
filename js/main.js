@@ -2,6 +2,7 @@ import { Chord } from './charts/chord.js';
 import { Episodes } from './charts/episodes.js';
 import { WordCloud } from './charts/word-cloud.js';
 import { Words } from './charts/words.js';
+import { Stacked } from './charts/stacked.js';
 import { CharacterFormBuilder } from './helpers/character-form-builder.js';
 import { EpisodeFormBuilder } from './helpers/episode-form-builder.js';
 
@@ -30,6 +31,11 @@ async function main() {
       id: 'words-line',
       groupingKey: 'scene',
    });
+   linesStacked = new Stacked({
+      parentElementSelector: 'stacked-lines-container',
+      id: 'stacked-lines',
+      groupingKey: 'scene',
+   })
    scenesChord = new Chord({
       parentElementSelector: '#scenes-chord-container',
       id: 'scene-chord',

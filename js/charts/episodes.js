@@ -10,8 +10,8 @@ export class Episodes {
  
         this.width = 0;
         this.height = 0;
-        this.xAxisTitle = '';
-        this.yAxisTitle = '';
+        this.xAxisTitle = 'Seasons';
+        this.yAxisTitle = '# of Episodes';
         this.characterEpisodes = [];
         this.activeSeasons = [];
  
@@ -40,35 +40,29 @@ export class Episodes {
 
         this.setWidthAndHeight();
 
-        this.mainDiv
-            .append("p")
-            .attr("class", "y-axis-title")
-            .style("grid-area", "y")
-            .style("writing-mode", "vertical-rl")
-            .style("text-orientation", "mixed")
-            .style("text-align", "center")
-            .style("transform", "rotate(180deg)")
-            .text(this.yAxisTitle);
-  
-        this.mainDiv
-            .append("p")
-            .attr("class", "x-axis-title")
-            .style("grid-area", "x")
-            .style("text-align", "center")
-            .text(this.xAxisTitle);
-
         this.svg = this.mainDiv
             .append('svg')
             .attr('width', '100%')
             .attr('height', '100%');
 
+        this.xtitle = this.svg.append('text')
+            .attr('x', 200)
+            .attr('y', 140)
+            .text(this.xAxisTitle);
+      
+        this.ytitle = this.svg.append('text')
+            .attr('x', -110)
+            .attr('y', 12)
+            .text(this.yAxisTitle)
+            .style('transform','rotate(270deg)');
+
         this.x = d3.scaleLinear()
             .domain([1, 10])
-            .range([ 0, this.width ]);
+            .range([ this.config.margin.left, this.width-this.config.margin.left]);
 
         this.xAxis = d3.axisBottom().scale(this.x);
 
-        this.xAxisG = this.svg.append('g').attr("transform", "translate(0," + this.height + ")")
+        this.xAxisG = this.svg.append('g').attr("transform", "translate("+(this.config.margin.left)+"," + this.height + ")")
         
         /*this.xAxisG = this.svg.append("g")
             .attr("transform", "translate(0," + this.height + ")")
@@ -144,12 +138,12 @@ export class Episodes {
         //console.log('max: '+max);
 
         //console.log('updateVis() width: '+this.width+' height: '+this.height);
-        this.x.domain(d3.extent(this.activeSeasons)).range([0,this.width]);
+        this.x.domain(d3.extent(this.activeSeasons.reduce( (acc, x ) => acc.concat(+x), []))).range([this.config.margin.left,this.width-this.config.margin.left]);
         this.y.domain([0,max]).range([this.height,0]);
 
         //https://d3-graph-gallery.com/graph/line_several_group.html
         //console.log('updateVis: '+ this.characterEpisodes);
-        if(this.characterEpisodes != []){
+        if(this.characterEpisodes != [] && this.characterEpisodes !== null){
             this.svg.selectAll(".line")
             .data(this.characterEpisodes)
             .join("path")
@@ -196,7 +190,9 @@ export class Episodes {
                 this.config.margin.bottom;
             //console.log('setWidthAndHeight() width: '+this.width+' height: '+this.height);
 
-            this.xAxisG?.attr("transform", `translate(0,${this.height})`);
+            //this.xAxisG?.attr("transform", `translate(${this.config.margin.left} ,${this.height})`);
+            this.xAxisG?.attr("transform", `translate(0 ,${this.height})`);
+            this.yAxisG?.attr("transform", `translate(${this.config.margin.left} ,0)`);
 
             //this.clipPath?.attr("width", this.width).attr("height", this.height);
 

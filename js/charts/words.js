@@ -141,6 +141,10 @@ export class Words {
        this.x.domain(d3.extent(this.activeSeasons.reduce( (acc, x ) => acc.concat(+x), []))).range([this.config.margin.left,this.width-this.config.margin.left]);
        this.y.domain([0,max]).range([this.height,0]);
 
+       this.svg.selectAll("path")
+            .data(this.characterLines)
+            .join("path")
+
        //https://d3-graph-gallery.com/graph/line_several_group.html
        //console.log('updateVis: '+ this.characterLines);
        if(this.characterLines != [] && this.characterLines !== null){

@@ -1,5 +1,8 @@
 // ---------- Data variables ----------
 
+import { Episodes } from './charts/episodes.js';
+import { Words } from './charts/words.js';
+import { Stacked } from './charts/stacked.js';
 import { Chord } from './charts/chord.js';
 import { CharacterFormBuilder } from './helpers/character-form-builder.js';
 import { EpisodeFormBuilder } from './helpers/episode-form-builder.js';
@@ -49,6 +52,11 @@ globalThis.episodesLine = null;
  */
 globalThis.wordsLine = null;
 /**
+ * @type {(Stacked | null)}
+ * Object for words line chart instance
+ */
+globalThis.linesStacked = null;
+/**
  * @type {(Chord | null)}
  * Object for chord chart instance
  */
@@ -67,12 +75,14 @@ globalThis.updateAllVis = (dataChange) => {
       // wordCloud?.updateData(data);
       episodesLine?.updateData(data);
       wordsLine?.updateData(data);
+      linesStacked?.updateData(data);
       scenesChord?.updateData(data);
       episodesChord?.updateData(data);
    } else {
       // wordCloud?.updateVis();
       episodesLine?.updateVis();
       wordsLine?.updateVis();
+      linesStacked?.updateVis();
       scenesChord?.updateVis();
       episodesChord?.updateVis();
    }

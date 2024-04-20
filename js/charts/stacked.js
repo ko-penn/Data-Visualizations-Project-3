@@ -1,4 +1,4 @@
-export class Episodes {
+export class Stacked {
     constructor(_config) {
         this.config = {
             parentElementSelector: _config.parentElementSelector,
@@ -98,29 +98,38 @@ export class Episodes {
             )
         );
         //console.log(this.uniqueCharacters);
-        this.activeSeasons = Array.from(
+        this.activeEpisodes = Array.from(
             new Set(
                episodeFormBuilder.treeItems
                   .filter((c) => c.selected === true)
-                  .map((c) => c.getAttribute('data-season'))
+                  .map((c) => 
+                    c.getAttribute('data-key'))
             )
         );
-        //console.log(this.activeSeasons);
-        this.characterEpisodes = [];
-        this.uniqueCharacters.forEach((d) => {
-            this.characterEpisodes.push({key: d,values:[]});
-            this.activeSeasons.forEach((d) => {
-                this.characterEpisodes[this.characterEpisodes.length-1].values.push({season:d,episodes:0})
+
+        this.episodeLines = [];
+        this.activeEpisodes.forEach((d) => {
+            this.episodeLines.push({group:d, columns:{0:'group'}})
+            for (let i = 0; i < this.uniqueCharacters.length; i++){
+                this.episodeLines[this.episodeLines.length-1][this.uniqueCharacters[i]] = 0;
+                this.episodeLines[this.episodeLines.length-1].columns[i+1] = this.uniqueCharacters[i];
+            }
+        })
+
+        for (let i = 0; i < this.episodeLines.length; i++) {
+            data[i].scenes.forEach((d) => {
+                d.lines.forEach((e) => {
+                    if(this.uniqueCharacters.includes(e.quoteFrom[0].toUpperCase()+e.quoteFrom.substr(1).toLowerCase())){
+                        this.episodeLines[i][e.quoteFrom[0].toUpperCase()+e.quoteFrom.substr(1).toLowerCase()] = this.episodeLines[i][e.quoteFrom[0].toUpperCase()+e.quoteFrom.substr(1).toLowerCase()] + 1;
+                    }
+                })
             })
-            data.forEach((e) => {
-                if(e.speakers.includes(this.characterEpisodes[this.characterEpisodes.length-1].key)){
-                    let currentCharacter = (this.characterEpisodes.length-1);
-                    let currentSeason = (this.activeSeasons.indexOf(e.season.toString()));
-                    this.characterEpisodes[currentCharacter].values[currentSeason].episodes = this.characterEpisodes[currentCharacter].values[currentSeason].episodes + 1;
-                }
-            })
-        });
-        //console.log(this.characterEpisodes);
+        }
+
+        this.stackedData = d3.stack().keys(this.uniqueCharacters)(this.episodeLines);
+        
+        //console.log(this.episodeLines);
+        //console.log(this.stackedData);
         this.updateVis();
     }
  
@@ -145,7 +154,7 @@ export class Episodes {
             .data(this.characterEpisodes)
             .join("path")
 
-        //https://d3-graph-gallery.com/graph/line_several_group.html
+        //https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
         //console.log('updateVis: '+ this.characterEpisodes);
         if(this.characterEpisodes != [] && this.characterEpisodes !== null){
             this.svg.selectAll(".line")

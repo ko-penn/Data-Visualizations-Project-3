@@ -1,8 +1,8 @@
 import { Chord } from './charts/chord.js';
 import { Episodes } from './charts/episodes.js';
+import { Stacked } from './charts/stacked.js';
 import { WordCloud } from './charts/word-cloud.js';
 import { Words } from './charts/words.js';
-import { Stacked } from './charts/stacked.js';
 import { CharacterFormBuilder } from './helpers/character-form-builder.js';
 import { EpisodeFormBuilder } from './helpers/episode-form-builder.js';
 
@@ -35,7 +35,7 @@ async function main() {
       parentElementSelector: 'stacked-lines-container',
       id: 'stacked-lines',
       groupingKey: 'scene',
-   })
+   });
    scenesChord = new Chord({
       parentElementSelector: '#scenes-chord-container',
       id: 'scene-chord',
@@ -47,24 +47,7 @@ async function main() {
       groupingKey: 'episode',
    });
 
-   let uniqueCharacters = Array.from(
-      new Set(
-         characterFormBuilder.checkboxs
-            .filter((c) => c.checked)
-            .map((c) => c.getAttribute('data-character'))
-      )
-   );
-
-   // let unCheckedCharacters = Array.from(
-   //    new Set(
-   //       characterFormBuilder.checkboxs
-   //          .filter((c) => !c.checked)
-   //          .map((c) => c.getAttribute('data-character'))
-   //    )
-   // );
-   
-   // console.log(unCheckedCharacters);
-   uniqueCharacters.forEach((c, i) => characterWordClouds(c,i));
+   initializeCharacterWordClouds();
 
    await handleGlobalFilterChange();
 
@@ -88,13 +71,20 @@ function processData() {
    });
 }
 
-function characterWordClouds(character, index){
-   wordClouds.push(new WordCloud({
-      parentElementSelector: '#character-word-cloud-container',
-      id: character + '-word-cloud',
-   },
-   character,
-))
-
-
+function initializeCharacterWordClouds() {
+   Array.from(
+      new Set(
+         characterFormBuilder.checkboxs
+            .filter((c) => c.checked)
+            .map((c) => c.getAttribute('data-character'))
+      )
+   ).forEach((character) => {
+      wordClouds[character] = new WordCloud(
+         {
+            parentElementSelector: '#character-word-cloud-container',
+            id: character + '-word-cloud',
+         },
+         character
+      );
+   });
 }

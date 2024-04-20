@@ -6,7 +6,7 @@ export class WordCloud {
          margin: _config.margin || { top: 25, right: 25, bottom: 25, left: 45 },
          id: _config.id,
       };
-      this.character= _character;
+      this.character = _character;
       this.initVis();
 
       window.addEventListener('resize', () => {
@@ -17,7 +17,6 @@ export class WordCloud {
    initVis() {
       const idInParent = document.querySelector(this.config.id);
       if (!idInParent) {
-         
          this.mainDiv = d3
             .select(this.config.parentElementSelector)
             .append('div')
@@ -25,7 +24,9 @@ export class WordCloud {
             .style('width', '100%')
             .attr('id', this.config.id);
 
-            this.wordCloudCharacterName = this.mainDiv.append('h2').text(this.character);
+         this.wordCloudCharacterName = this.mainDiv
+            .append('h2')
+            .text(this.character);
       } else {
          this.mainDiv = d3.select(
             `${this.config.parentElementSelector} #${this.config.id}`
@@ -35,8 +36,7 @@ export class WordCloud {
       this.svg = this.mainDiv
          .append('svg')
          .attr('height', '100%')
-         .attr('width', '100%')
-         .style('grid-area', 'chart');
+         .attr('width', '100%');
 
       this.chart = this.svg
          .append('g')
@@ -59,22 +59,20 @@ export class WordCloud {
    }
 
    updateData(data) {
-
-      let characterWords = "";
-      data.forEach((d) =>{
-         
-         if (d.speakers.includes(this.character)){
-            d.scenes.forEach((s) =>{
-               if(s.speakers.includes(this.character)){
+      let characterWords = '';
+      data.forEach((d) => {
+         if (d.speakers.includes(this.character)) {
+            d.scenes.forEach((s) => {
+               if (s.speakers.includes(this.character)) {
                   s.lines.forEach((l) => {
-                     if(l.speakers.includes(this.character)){
-                        characterWords = characterWords + " " + l.line;
+                     if (l.speakers.includes(this.character)) {
+                        characterWords = characterWords + ' ' + l.line;
                      }
-                  })
+                  });
                }
-            })
+            });
          }
-      })
+      });
       this.data = characterWords;
       this.updateVis();
    }
@@ -214,7 +212,7 @@ export class WordCloud {
       ];
       const wordCounts = {};
 
-      if(this.data){
+      if (this.data) {
          this.data.split(' ').forEach((word) => {
             const word_clean = word.split('.').join('').toLowerCase();
             if (!stopwords.includes(word_clean)) {
@@ -225,7 +223,6 @@ export class WordCloud {
             }
          });
       }
-      
 
       const keys = Object.keys(wordCounts);
       const maxNumOfWords = 100;
@@ -303,5 +300,10 @@ export class WordCloud {
             this.config.margin.top -
             this.config.margin.bottom;
       }
+   }
+
+   destroy() {
+      this.mainDiv.node().remove();
+      wordClouds[this.character] = undefined;
    }
 }

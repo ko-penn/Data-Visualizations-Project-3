@@ -35,8 +35,19 @@
    <body>
       <div id="header">
          <div class="lhs">
-            <div class="top">
-               <h1>Project 3</h1>
+            <div
+               class="top"
+               style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: flex-start;
+               "
+            >
+               <h1>Project 3 -</h1>
+               <img
+                  style="height: 2em; margin: 0 1em"
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Friends_logo.svg/1186px-Friends_logo.svg.png"
+               />
             </div>
             <div class="bottom">
                <p>By Devin Harris, Alex Yang, and Kody Penn</p>
@@ -192,8 +203,8 @@
                      episodes?
                      <div id="line-charts-container">
                         <div
-                        class="episodes-container"
-                        id="episodes-line-container"
+                           class="episodes-container"
+                           id="episodes-line-container"
                         ></div>
                         <div
                            class="words-container"
@@ -204,17 +215,13 @@
                            id="stacked-lines-container"
                         ></div>
                      </div>
-                     
                   </sl-tab-panel>
 
                   <sl-tab slot="nav" panel="character-wordclouds">
                      Character Wordclouds
                   </sl-tab>
                   <sl-tab-panel name="character-wordclouds">
-                     
-                     <div id="character-word-cloud-container">
-
-                     </div>
+                     <div id="character-word-cloud-container"></div>
                   </sl-tab-panel>
 
                   <sl-tab slot="nav" panel="character-relations">

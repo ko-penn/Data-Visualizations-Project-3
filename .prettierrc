@@ -1,6 +1,7 @@
 {
-  "singleQuote": true,
-  "tabWidth": 3,
-  "semi": true,
-  "useEditorConfig": false
+   "singleQuote": true,
+   "tabWidth": 3,
+   "semi": true,
+   "useEditorConfig": false,
+   "useTabs": true
 }

@@ -1,9 +1,10 @@
 // ---------- Data variables ----------
 
-import { Episodes } from './charts/episodes.js';
-import { Words } from './charts/words.js';
-import { Stacked } from './charts/stacked.js';
 import { Chord } from './charts/chord.js';
+import { Episodes } from './charts/episodes.js';
+import { Stacked } from './charts/stacked.js';
+import { WordCloud } from './charts/word-cloud.js';
+import { Words } from './charts/words.js';
 import { CharacterFormBuilder } from './helpers/character-form-builder.js';
 import { EpisodeFormBuilder } from './helpers/episode-form-builder.js';
 
@@ -66,20 +67,29 @@ globalThis.scenesChord = null;
  * Object for chord chart instance
  */
 globalThis.episodesChord = null;
+/**
+ * @type {({[x: string]: WordCloud})}
+ * Object for chord chart instance
+ */
+globalThis.wordClouds = {};
 
 /**
  * Updates all global instances of all visualizations
  */
 globalThis.updateAllVis = (dataChange) => {
    if (dataChange) {
-      // wordCloud?.updateData(data);
+      Object.entries(wordClouds).forEach(([character, instance]) =>
+         instance?.updateData(data)
+      );
       episodesLine?.updateData(data);
       wordsLine?.updateData(data);
       linesStacked?.updateData(data);
       scenesChord?.updateData(data);
       episodesChord?.updateData(data);
    } else {
-      // wordCloud?.updateVis();
+      Object.entries(wordClouds)?.forEach(([character, instance]) =>
+         instance?.updateVis()
+      );
       episodesLine?.updateVis();
       wordsLine?.updateVis();
       linesStacked?.updateVis();
@@ -115,6 +125,29 @@ const debouncePromise = (fn, ms = 0) => {
 const handleGlobalFilterChangeFunction = (forceDataChange = false) =>
    new Promise((resolve) => {
       const preData = [...data];
+
+      const selectedCharacters = new Set(
+         characterFormBuilder.checkboxs
+            .filter((c) => c.checked)
+            .map((c) => c.getAttribute('data-character'))
+      );
+      Object.keys(wordClouds).forEach((k) => {
+         if (!selectedCharacters.has(k)) {
+            wordClouds[k]?.destroy();
+         }
+      });
+      Array.from(selectedCharacters).forEach((character) => {
+         if (!wordClouds[character]) {
+            wordClouds[character] = new WordCloud(
+               {
+                  parentElementSelector: '#character-word-cloud-container',
+                  id: character + '-word-cloud',
+               },
+               character
+            );
+         }
+      });
+
       data = Object.keys(processedData)
          .filter((key) => {
             if (
@@ -131,15 +164,11 @@ const handleGlobalFilterChangeFunction = (forceDataChange = false) =>
             const d = processedData[key];
             d.scenes = d.scenes.map((s) => {
                s.lines = s.lines.filter((l) =>
-                  characterFormBuilder.checkboxs
-                     .filter((c) => c.checked)
-                     .some((c) =>
-                        l.speakers.some(
-                           (speaker) =>
-                              speaker.toLowerCase() ===
-                              c.getAttribute('data-character').toLowerCase()
-                        )
+                  Array.from(selectedCharacters).some((c) =>
+                     l.speakers.some(
+                        (speaker) => speaker.toLowerCase() === c.toLowerCase()
                      )
+                  )
                );
                return s;
             });

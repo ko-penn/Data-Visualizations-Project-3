@@ -1,12 +1,12 @@
 export class WordCloud {
-   constructor(_config, _data) {
+   constructor(_config, _character) {
       this.config = {
          parentElementSelector: _config.parentElementSelector,
          parentElement: document.querySelector(_config.parentElementSelector),
          margin: _config.margin || { top: 25, right: 25, bottom: 25, left: 45 },
          id: _config.id,
       };
-      this.data = _data;
+      this.character = _character;
       this.initVis();
 
       window.addEventListener('resize', () => {
@@ -23,6 +23,10 @@ export class WordCloud {
             .style('height', '100%')
             .style('width', '100%')
             .attr('id', this.config.id);
+
+         this.wordCloudCharacterName = this.mainDiv
+            .append('h2')
+            .text(this.character);
       } else {
          this.mainDiv = d3.select(
             `${this.config.parentElementSelector} #${this.config.id}`
@@ -32,8 +36,7 @@ export class WordCloud {
       this.svg = this.mainDiv
          .append('svg')
          .attr('height', '100%')
-         .attr('width', '100%')
-         .style('grid-area', 'chart');
+         .attr('width', '100%');
 
       this.chart = this.svg
          .append('g')
@@ -56,7 +59,21 @@ export class WordCloud {
    }
 
    updateData(data) {
-      this.data = data;
+      let characterWords = '';
+      data.forEach((d) => {
+         if (d.speakers.includes(this.character)) {
+            d.scenes.forEach((s) => {
+               if (s.speakers.includes(this.character)) {
+                  s.lines.forEach((l) => {
+                     if (l.speakers.includes(this.character)) {
+                        characterWords = characterWords + ' ' + l.line;
+                     }
+                  });
+               }
+            });
+         }
+      });
+      this.data = characterWords;
       this.updateVis();
    }
 
@@ -195,8 +212,8 @@ export class WordCloud {
       ];
       const wordCounts = {};
 
-      this.data.forEach((d) => {
-         d.description.split(' ').forEach((word) => {
+      if (this.data) {
+         this.data.split(' ').forEach((word) => {
             const word_clean = word.split('.').join('').toLowerCase();
             if (!stopwords.includes(word_clean)) {
                if (!wordCounts[word_clean]) {
@@ -205,7 +222,7 @@ export class WordCloud {
                wordCounts[word_clean]++;
             }
          });
-      });
+      }
 
       const keys = Object.keys(wordCounts);
       const maxNumOfWords = 100;
@@ -283,5 +300,10 @@ export class WordCloud {
             this.config.margin.top -
             this.config.margin.bottom;
       }
+   }
+
+   destroy() {
+      this.mainDiv.node().remove();
+      wordClouds[this.character] = undefined;
    }
 }

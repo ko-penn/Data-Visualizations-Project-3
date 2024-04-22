@@ -100,16 +100,12 @@ sl-details::part(summary) {
 		text-align: center;
 	}
 }
-
 .vis-view {
-	margin: 1em 0;
-
+	margin-bottom: 1em;
 	img {
-		width: 100%;
-		margin: 0 auto;
+		margin: 1em;
 	}
 }
-
 .code-structure {
 	margin: 1em 0;
 	width: 100%;

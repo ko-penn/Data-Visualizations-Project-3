@@ -209,13 +209,71 @@
 				<div class="content">
 					<div class="vis-view">
 						<h4>Episodes Selector</h4>
-						<img src="./images/visualComponents/timeline.png" />
-						<p>...</p>
+						<div
+							style="
+								display: flex;
+								min-height: 0;
+								width: 100%;
+								justify-content: center;
+							"
+						>
+							<img
+								src="./images/visualComponents/episodes-selector1.png"
+							/>
+							<img
+								src="./images/visualComponents/episodes-selector2.png"
+							/>
+						</div>
+						<p>
+							The episodes selector allows the user to select specific
+							episodes and/or seasons to pull data from. By default all
+							episodes and seasons are selected. It uses the shoelace
+							tree component to allow nesting each episode under each
+							season in a very easy to navigate way. It also shows a
+							total selected episodes count in the top right where if you
+							hover over it you can see the number of episodes selected
+							per season. If all the episodes in a season are selected
+							the count will show as a green tag otherwise a gray one.
+							Checking any box from this selector will update all the
+							charts on the right hand side to only pull lines, scenes,
+							etc... from those episodes.
+						</p>
 					</div>
 					<div class="vis-view">
 						<h4>Characters Selector</h4>
-						<img src="./images/visualComponents/map.png" />
-						<p>...</p>
+						<div
+							style="
+								display: flex;
+								min-height: 0;
+								width: 100%;
+								justify-content: center;
+							"
+						>
+							<img
+								src="./images/visualComponents/characters-selector1.png"
+							/>
+							<img
+								src="./images/visualComponents/characters-selector2.png"
+							/>
+						</div>
+						<p>
+							The characters selector allows the user to select specific
+							characters to pull data from. By default all the main
+							characters (the 6 with the most overall lines) are
+							selected. All non main characters are put into a separate
+							detail section to prevent left side from getting a bunch of
+							unnessary scroll. You can also search for specific
+							characters within this detail section to make sifting
+							through that list a bit easier. The "Other Characters" list
+							is also sorted by number of lines so Mike is the character
+							with the next most amount of lines after Phoebe. It also
+							shows a total selected characters count in the top right
+							where if you hover over it you can see the number of main
+							characters and other characters selected as well. Checking
+							any box from this selector will update the chord and
+							wordclouds charts on the right hand side to only pull
+							lines, scenes, etc... from those characters.
+						</p>
 					</div>
 					<div class="vis-view">
 						<h4>Line Charts</h4>
@@ -229,8 +287,29 @@
 					</div>
 					<div class="vis-view">
 						<h4>Chord Charts</h4>
-						<img src="./images/visualComponents/WordCloud.png" />
-						<p>...</p>
+						<div
+							style="
+								display: flex;
+								min-height: 0;
+								width: 100%;
+								justify-content: center;
+							"
+						>
+							<img src="./images/visualComponents/chord.png" />
+						</div>
+						<p>
+							The chord charts display character relationships. There are
+							two chord charts, one for scene relationships and the other
+							for episode relationships. Simply put, we count the number
+							of scenes/episodes every character selected share within
+							the episode selections and show the strength of the
+							relationships over those domains with the chord ribbons.
+							There are also tooltips on these charts so hovering over a
+							specific ribbon will show you the number of scenes/episodes
+							the characters connected with said ribbon share. You can
+							also hover over the individual character arcs to see how
+							many total scenes/episodes the character is in.
+						</p>
 					</div>
 				</div>
 			</sl-details>

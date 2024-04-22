@@ -76,15 +76,12 @@ section {
 	}
 }
 
-summary {
-	padding: 1em;
-	::marker {
-		transform: translateY(-10px);
-	}
-	h2 {
-		display: inline;
-		line-height: 1;
-	}
+sl-details {
+	margin: 1em;
+}
+sl-details::part(summary) {
+	font-weight: bold;
+	font-size: 1.125em;
 }
 
 .vis-view {

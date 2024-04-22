@@ -62,72 +62,68 @@
 			</div>
 		</div>
 
-		<details open class="requirements">
-			<summary><h2>Requirements</h2></summary>
-
-			<ul>
-				<li>
-					Explain the motivation for your application. What can it allow
-					someone to understand?
-				</li>
-				<li>
-					1 section on the data: Describe the data and include a link.
-					<ul style="padding-bottom: 0">
-						<li>
-							Since you will have done more work for this project to
-							obtain and process the data, describe your methods and
-							include processing scripts.
-						</li>
-					</ul>
-				</li>
-				<li>
-					1 section on the visualization components: Explain each view of
-					the data, the GUI, etc. Explain how you can interact with your
-					application, and how the views update in response to these
-					interactions.
-				</li>
-				<li>Include design sketches and design justifications.</li>
-				<li>
-					1 section on what your application enables you to discover:
-					Present some findings you arrive at with your application.
-				</li>
-				<li>
-					1 section on your process- what libraries did you use? How did
-					you structure your code? How can you access it and run it? Link
-					to your code (and the live application, if it is deployed
-					online).
-				</li>
-				<li>
-					Include a 2-3 minute demo video, showing your application in
-					action. The easiest way to record this is with a screen capture
-					tool, which also captures audio- such as Quicktime. Use a
-					voiceover or video captions to explain your application. Demo
-					videos should be sufficient on their own, but can reference your
-					documentation. Include the name of the project, your name, the
-					project components, and how your application works. You can
-					present it on your webpage or on youtube, but linked on your
-					webpage.
-				</li>
-				<li>
-					Document who on your team did which component of the project. Ex.
-					If someone worked on the data, and on bar charts, list their
-					effort on these components.
-				</li>
-			</ul>
-		</details>
-
 		<section>
-			<details open>
-				<summary>
-					<h2>Motivation</h2>
-				</summary>
-				<div class="content">...</div>
-			</details>
+			<sl-details open class="requirements" summary="Requirements">
+				<ul>
+					<li>
+						Explain the motivation for your application. What can it allow
+						someone to understand?
+					</li>
+					<li>
+						1 section on the data: Describe the data and include a link.
+						<ul style="padding-bottom: 0">
+							<li>
+								Since you will have done more work for this project to
+								obtain and process the data, describe your methods and
+								include processing scripts.
+							</li>
+						</ul>
+					</li>
+					<li>
+						1 section on the visualization components: Explain each view
+						of the data, the GUI, etc. Explain how you can interact with
+						your application, and how the views update in response to
+						these interactions.
+					</li>
+					<li>Include design sketches and design justifications.</li>
+					<li>
+						1 section on what your application enables you to discover:
+						Present some findings you arrive at with your application.
+					</li>
+					<li>
+						1 section on your process- what libraries did you use? How did
+						you structure your code? How can you access it and run it?
+						Link to your code (and the live application, if it is deployed
+						online).
+					</li>
+					<li>
+						Include a 2-3 minute demo video, showing your application in
+						action. The easiest way to record this is with a screen
+						capture tool, which also captures audio- such as Quicktime.
+						Use a voiceover or video captions to explain your application.
+						Demo videos should be sufficient on their own, but can
+						reference your documentation. Include the name of the project,
+						your name, the project components, and how your application
+						works. You can present it on your webpage or on youtube, but
+						linked on your webpage.
+					</li>
+					<li>
+						Document who on your team did which component of the project.
+						Ex. If someone worked on the data, and on bar charts, list
+						their effort on these components.
+					</li>
+				</ul>
+			</sl-details>
 		</section>
 
 		<section>
-			<details open>
-				<summary><h2>Data</h2></summary>
+			<sl-details open summary="Motivation">
+				<div class="content">...</div>
+			</sl-details>
+		</section>
+
+		<section>
+			<sl-details open summary="Data">
 				<div class="content">
 					<p>
 						The data for this project was scraped from
@@ -205,12 +201,11 @@
 						<sl-button slot="footer" variant="primary">Close</sl-button>
 					</sl-dialog>
 				</div>
-			</details>
+			</sl-details>
 		</section>
 
 		<section>
-			<details open>
-				<summary><h2>Visualization Components</h2></summary>
+			<sl-details open summary="Visualization Components">
 				<div class="content">
 					<div class="vis-view">
 						<h4>Episodes Selector</h4>
@@ -238,12 +233,11 @@
 						<p>...</p>
 					</div>
 				</div>
-			</details>
+			</sl-details>
 		</section>
 
 		<section>
-			<details open>
-				<summary><h2>Sketches</h2></summary>
+			<sl-details open summary="Sketches">
 				<div class="content">
 					<div class="code-structure">
 						<div class="code-section">
@@ -258,29 +252,29 @@
 						</div>
 					</div>
 				</div>
-			</details>
+			</sl-details>
 		</section>
 
 		<section>
-			<details open>
-				<summary><h2>Discovery</h2></summary>
+			<sl-details open summary="Discovery">
 				<div class="content">...</div>
-			</details>
+			</sl-details>
 		</section>
 
 		<section>
-			<details open>
-				<summary><h2>Process</h2></summary>
+			<sl-details open summary="Process">
 				<div class="content">
 					<p>
-						For libraries we used d3js, d3-cloud, and shoelace. d3 was
-						mainly used in building the chord and line charts. d3-cloud
-						was specifically for generating the word cloud. Shoelace was
-						an interesting webcomponent based library for building our
-						control and layout menus. It gave us some more interesting UI
-						elements to work with and made it easier to select certain
-						subselections of episodes/characters and change the size of
-						the viewable graphs.
+						For libraries we used d3js, d3-cloud, puppeteer, and shoelace.
+						d3 was mainly used in building the chord and line charts.
+						d3-cloud was specifically for generating the word cloud.
+						Puppeteer was used for our web scraping purposes. It is
+						highlight in more detail in the data section of this
+						documentation. Shoelace was an interesting webcomponent based
+						library for building our control and layout menus. It gave us
+						some more interesting UI elements to work with and made it
+						easier to select certain subselections of episodes/characters
+						and change the size of the viewable graphs.
 					</p>
 
 					<div class="code-structure">
@@ -385,12 +379,11 @@
 						>.
 					</p>
 				</div>
-			</details>
+			</sl-details>
 		</section>
 
 		<section>
-			<details open>
-				<summary><h2>Demo</h2></summary>
+			<sl-details open summary="Demo">
 				<div class="content">
 					<div class="video-container">
 						<!-- <iframe
@@ -398,12 +391,11 @@
                   ></iframe> -->
 					</div>
 				</div>
-			</details>
+			</sl-details>
 		</section>
 
 		<section>
-			<details open>
-				<summary><h2>Contributions</h2></summary>
+			<sl-details open summary="Contributions">
 				<div class="content">
 					<p>
 						<b>Devin Harris</b>: Web Scrapper, Site Layout
@@ -412,24 +404,24 @@
 					<p><b>Kody Penn</b>:</p>
 					<p><b>Alex Yang</b>:</p>
 				</div>
-			</details>
+			</sl-details>
 		</section>
 
 		<script>
 			function collapseAll() {
-				Array.from(document.querySelectorAll('details')).forEach(
-					(element) => {
+				Array.from(document.querySelectorAll('details'))
+					.concat(Array.from(document.querySelectorAll('sl-details')))
+					.forEach((element) => {
 						element.open = false;
-					}
-				);
+					});
 			}
 
 			function expandAll() {
-				Array.from(document.querySelectorAll('details')).forEach(
-					(element) => {
+				Array.from(document.querySelectorAll('details'))
+					.concat(Array.from(document.querySelectorAll('sl-details')))
+					.forEach((element) => {
 						element.open = true;
-					}
-				);
+					});
 			}
 
 			document.addEventListener('DOMContentLoaded', () => {

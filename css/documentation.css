@@ -84,6 +84,23 @@ sl-details::part(summary) {
 	font-size: 1.125em;
 }
 
+.carousel-item-content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	width: 100%;
+	img {
+		max-width: 100%;
+		min-height: 0;
+		margin: 1em;
+	}
+	p {
+		text-align: center;
+	}
+}
+
 .vis-view {
 	margin: 1em 0;
 

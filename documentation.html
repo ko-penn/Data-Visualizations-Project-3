@@ -280,86 +280,120 @@
 					<div class="code-structure">
 						<h4>Our code was structured in the following way:</h4>
 
-						<div class="code-section">
-							<div class="code-image-block">
-								<p>
-									First our main function collects all the data from
-									the csv, processes said data, then initializes all
-									the charts and event listeners.
-								</p>
-								<img src="./images/code/main.png" />
-							</div>
-							<div class="code-image-block">
-								<p>
-									The processData function loops over all the rawData
-									from the csv and does some type casting and build
-									some calculated fields like the totd, season, year,
-									month, hour, and other fields we are interested in
-									visualizing.
-								</p>
-								<img src="./images/code/data-processing.png" />
-							</div>
-							<div class="code-image-block">
-								<p>
-									The eventListeners in this case are for when the
-									timeline is collapsed, the bar chart sections
-									hideFrequencyCategoriesWithoutData toggle is changed,
-									and when the clear selections button is clicked.
-								</p>
-								<img src="./images/code/event-listeners.png" />
-							</div>
-
-							<div class="code-image-block">
-								<p>
-									We also had a globals file that stored all global
-									variables that would be shared across different chart
-									types. These variables include the rawData from the
-									csv, the processedData which is the rawData with
-									calculated fields and type casting, then the actual
-									data which is the filtered down version of the
-									processedData based on brush selections.
-								</p>
-								<img src="./images/code/data-variables.png" />
-							</div>
-
-							<div class="code-image-block">
-								<p>
-									We also had global variables for all the chart
-									instances. This makes it easier to access any chart
-									from anywhere in the code and makes it especially
-									easy to trigger updateVis method from other chart
-									interactions.
-								</p>
-								<img src="./images/code/chart-variables.png" />
-							</div>
-
-							<div class="code-image-block">
-								<p>
-									Finally, there were also a few helper functions
-									defined globally. The main two of note are the
-									updateAllVis and handleGlobalFilterChange. These
-									functions handle calling the updateVis/updateData on
-									all the charts, and applying new filtering logic to
-									the processedData to send to the chart instances on
-									some brush selections or timeline change. Another
-									interesting concept is debouncing the
-									handleGlobalFilterChange. Because all the charts call
-									this, making sure frequent potentially duplicated
-									calls dont trigger unessecary processing, a debounce
-									was implemented to basically wait 50ms after a call
-									to this method is made and if no new call is made in
-									that time it does the processing.
-								</p>
-								<img src="./images/code/helper-variables.png" />
-							</div>
-						</div>
+						<sl-carousel
+							pagination
+							navigation
+							mouse-dragging
+							style="--scroll-hint: 0%; height: 90vh"
+						>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<img src="./images/code/main.png" />
+									<p>
+										First our main function collects all the data from
+										the csv, processes said data, then initializes all
+										the charts and event listeners.
+									</p>
+								</div>
+							</sl-carousel-item>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<img src="./images/code/data-processing.png" />
+									<p>
+										The processData function loops over all the
+										rawData from the json file and does some places it
+										into a map like structure. This will make it
+										easier to find certain episodes later without
+										having to loop through a big array.
+									</p>
+								</div>
+							</sl-carousel-item>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<img src="./images/code/event-listeners.png" />
+									<p>
+										The eventListeners in this case are for when the
+										split panel is repositioned or the tab group
+										selection is changed. This ensures the charts stay
+										responsive to the containing view resizing and
+										show the most accurate data possible between tab
+										changes.
+									</p>
+								</div>
+							</sl-carousel-item>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<img src="./images/code/data-variables.png" />
+									<p>
+										We also had a globals file that stored all global
+										variables that would be shared across different
+										chart types. These variables include the rawData
+										from the json, the processedData which is the
+										rawData with in a faster map structure, then the
+										actual data which is the filtered down version of
+										the processedData based on character/episode
+										selections.
+									</p>
+								</div>
+							</sl-carousel-item>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<img src="./images/code/chart-variables.png" />
+									<p>
+										We also had global variables for all the chart
+										instances. This makes it easier to access any
+										chart from anywhere in the code and makes it
+										especially easy to trigger updateVis method from
+										other chart interactions.
+									</p>
+								</div>
+							</sl-carousel-item>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<div
+										style="
+											display: flex;
+											min-height: 0;
+											width: 100%;
+											justify-content: center;
+										"
+									>
+										<img src="./images/code/helper-variables.png" />
+										<img src="./images/code/helper-variables2.png" />
+									</div>
+									<p>
+										Finally, there were also a few helper functions
+										defined globally. The main two of note are the
+										updateAllVis and handleGlobalFilterChange. These
+										functions handle calling the updateVis/updateData
+										on all the charts, and applying new filtering
+										logic to the processedData to send to the chart
+										instances on some character/episode selections
+										change. Another interesting concept is debouncing
+										the handleGlobalFilterChange. Because all the
+										charts call this, making sure frequent potentially
+										duplicated calls dont trigger unessecary
+										processing, a debounce was implemented to
+										basically wait 50ms after a call to this method is
+										made and if no new call is made in that time it
+										does the processing. You can also see special
+										logic for the word clouds were done since we have
+										a wordcloud instance per character selected and
+										destroying an instance for a character that was
+										unselected or creating a new instance for a
+										character that was selected was necessary.
+									</p>
+								</div>
+							</sl-carousel-item>
+						</sl-carousel>
 					</div>
 
 					<p>
 						Of course there are lots of more interesting areas, such as
-						the chart implementations themselves and how the timeline
-						plays on a setInterval, but I will leave that for you to
-						investigate in our sourcecode!
+						the chart implementations themselves, how the chord graph
+						builds its relationship matrix, how the line graphs are
+						constructed but I will leave that for you to investigate in
+						our sourcecode!
 					</p>
 					<br />
 					<p>

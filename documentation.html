@@ -1,50 +1,554 @@
 <!DOCTYPE html>
 <html>
-   <head>
-      <title>Project 3</title>
-      <link rel="icon" href="data:;base64,iVBORwOKGO=" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-      <link
-         href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-         rel="stylesheet"
-      />
+	<head>
+		<title>Project 3</title>
+		<link rel="icon" href="data:;base64,iVBORwOKGO=" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+			rel="stylesheet"
+		/>
 
-      <link rel="stylesheet" href="css/documentation.css" />
-      <link
-         defer
-         rel="stylesheet"
-         href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/themes/light.css"
-      />
+		<link rel="stylesheet" href="css/documentation.css" />
+		<link
+			defer
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/themes/light.css"
+		/>
 
-      <script
-         src="https://kit.fontawesome.com/ce1e161f8c.js"
-         crossorigin="anonymous"
-      ></script>
-   </head>
-   <body>
-      <div id="header">
-         <div class="lhs">
-            <div class="top">
-               <h1>Project 3</h1>
-            </div>
-            <div class="bottom">
-               <p>By Devin Harris, Alex Yang, and Kody Penn</p>
-            </div>
-         </div>
+		<script
+			defer
+			type="module"
+			src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/shoelace-autoloader.js"
+		></script>
+		<script
+			src="https://kit.fontawesome.com/ce1e161f8c.js"
+			crossorigin="anonymous"
+		></script>
+	</head>
+	<body>
+		<div id="header">
+			<div class="lhs">
+				<div
+					class="top"
+					style="
+						display: flex;
+						align-items: center;
+						justify-content: flex-start;
+					"
+				>
+					<h1>Project 3 -</h1>
+					<img
+						style="height: 2em; margin: 0 1em"
+						src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Friends_logo.svg/1186px-Friends_logo.svg.png"
+					/>
+				</div>
+				<div class="bottom">
+					<p>By Devin Harris, Alex Yang, and Kody Penn</p>
+				</div>
+			</div>
 
-         <div class="rhs">
-            <a target="_blank" href="./index.html">
-               <button id="info">
-                  Visualization
-                  <i class="fas fa-external-link-alt"></i>
-               </button>
-            </a>
-         </div>
-      </div>
+			<div class="rhs">
+				<button onclick="collapseAll()">Collapse All</button>
+				<button onclick="expandAll()">Expand All</button>
 
-      <div class="content"></div>
+				<a target="_blank" href="./index.html">
+					<button id="info">
+						Visualization
+						<i class="fas fa-external-link-alt"></i>
+					</button>
+				</a>
+			</div>
+		</div>
 
-      <div id="tooltip"></div>
-   </body>
+		<section>
+			<sl-details open class="requirements" summary="Requirements">
+				<ul>
+					<li>
+						Explain the motivation for your application. What can it allow
+						someone to understand?
+					</li>
+					<li>
+						1 section on the data: Describe the data and include a link.
+						<ul style="padding-bottom: 0">
+							<li>
+								Since you will have done more work for this project to
+								obtain and process the data, describe your methods and
+								include processing scripts.
+							</li>
+						</ul>
+					</li>
+					<li>
+						1 section on the visualization components: Explain each view
+						of the data, the GUI, etc. Explain how you can interact with
+						your application, and how the views update in response to
+						these interactions.
+					</li>
+					<li>Include design sketches and design justifications.</li>
+					<li>
+						1 section on what your application enables you to discover:
+						Present some findings you arrive at with your application.
+					</li>
+					<li>
+						1 section on your process- what libraries did you use? How did
+						you structure your code? How can you access it and run it?
+						Link to your code (and the live application, if it is deployed
+						online).
+					</li>
+					<li>
+						Include a 2-3 minute demo video, showing your application in
+						action. The easiest way to record this is with a screen
+						capture tool, which also captures audio- such as Quicktime.
+						Use a voiceover or video captions to explain your application.
+						Demo videos should be sufficient on their own, but can
+						reference your documentation. Include the name of the project,
+						your name, the project components, and how your application
+						works. You can present it on your webpage or on youtube, but
+						linked on your webpage.
+					</li>
+					<li>
+						Document who on your team did which component of the project.
+						Ex. If someone worked on the data, and on bar charts, list
+						their effort on these components.
+					</li>
+				</ul>
+			</sl-details>
+		</section>
+
+		<section>
+			<sl-details open summary="Motivation">
+				<div class="content">...</div>
+			</sl-details>
+		</section>
+
+		<section>
+			<sl-details open summary="Data">
+				<div class="content">
+					<p>
+						The data for this project was scraped from
+						<a
+							target="_blank"
+							href="https://www.livesinabox.com/friends/scripts.shtml"
+						>
+							https://www.livesinabox.com/friends/scripts.shtml </a
+						>. We did this using a javascript library called
+						<a target="_blank" href="https://pptr.dev/">Puppeteer</a>. We
+						opted to go this route for a few reasons. First the
+						transcripts text files we found online had some
+						inconsistencies between certain episodes making the parsing
+						process a bit difficult. There were also not any options we
+						found that had clear delimiters for where episode titles were
+						so knowing when a episode was over was hard to distinguish. We
+						also thought using puppeteer would be a good chance to
+						enchance our js skills and explore the realm of web scraping
+						which is very closely related to data visualization.
+					</p>
+					<br />
+					<p>
+						The code for this scrapper can be found in the
+						<strong>/js/scrapper.js</strong>
+						file. Within this file you will see we first navigate to the
+						<strong>livesinabox</strong> site and find all the links to
+						all the episodes transcripts. Once we do this we go to each of
+						those links and download the full html content of the page
+						(depending on the downloadHtmlFiles global boolean). We should
+						only need to do this once, since once we have a local copy we
+						can flip the downloadHtmlFiles flag to false and use our local
+						copy to parse from. This prevents unneeded load on the source
+						site while we tested the parser. Once we had the local files
+						we loop over each one and parse out the html content for every
+						scene and every line within that scene. We also store who said
+						the line. Once we have a big array build with all the scenes
+						per episode and all the lines per scene we do another
+						postprocessing loop to convert all the lines to the better
+						list of speakers. This is important because many lines in the
+						transcripts were said by "All" or "Everybody" or "Joey
+						(mimicking Rachel)". Without extra processing to convert this
+						to a list of all speakers involved or parsing out extra
+						context of how the speaker is saying the line, these would be
+						treated as separate characters which muddy up the line
+						associations and character selectors.
+					</p>
+					<br />
+					<p>
+						There were also some inconsistencies within the latter
+						episodes which we tried to write special handling logic for
+						within our parser. This did not work perfectly as we only have
+						229 total episodes parsed out from this site which there
+						should be 236. There may also be some strange lines were
+						parsing stop prematuraly due to strange characters found
+						denoting a new scene or something of that nature, but given
+						more time we could have worked out these kinks and build a
+						better data parser.
+					</p>
+					<br />
+					<p>
+						Once all this processing was done we saved a local
+						<strong>transcripts.json</strong> file that our visualization
+						pulls from to build the various charts, character/episode
+						selectors, etc...
+					</p>
+					<br />
+					<sl-button id="transcriptsOpenBtn">
+						View the full transcripts.json file
+					</sl-button>
+
+					<sl-dialog label="Drawer" class="transcripts-dialog-overview">
+						<pre>
+                     <sl-include src="./data/transcripts.json"></sl-include>
+                  </pre>
+						<sl-button slot="footer" variant="primary">Close</sl-button>
+					</sl-dialog>
+				</div>
+			</sl-details>
+		</section>
+
+		<section>
+			<sl-details open summary="Visualization Components">
+				<div class="content">
+					<div class="vis-view">
+						<h4>Episodes Selector</h4>
+						<div
+							style="
+								display: flex;
+								min-height: 0;
+								width: 100%;
+								justify-content: center;
+							"
+						>
+							<img
+								src="./images/visualComponents/episodes-selector1.png"
+							/>
+							<img
+								src="./images/visualComponents/episodes-selector2.png"
+							/>
+						</div>
+						<p>
+							The episodes selector allows the user to select specific
+							episodes and/or seasons to pull data from. By default all
+							episodes and seasons are selected. It uses the shoelace
+							tree component to allow nesting each episode under each
+							season in a very easy to navigate way. It also shows a
+							total selected episodes count in the top right where if you
+							hover over it you can see the number of episodes selected
+							per season. If all the episodes in a season are selected
+							the count will show as a green tag otherwise a gray one.
+							Checking any box from this selector will update all the
+							charts on the right hand side to only pull lines, scenes,
+							etc... from those episodes.
+						</p>
+					</div>
+					<div class="vis-view">
+						<h4>Characters Selector</h4>
+						<div
+							style="
+								display: flex;
+								min-height: 0;
+								width: 100%;
+								justify-content: center;
+							"
+						>
+							<img
+								src="./images/visualComponents/characters-selector1.png"
+							/>
+							<img
+								src="./images/visualComponents/characters-selector2.png"
+							/>
+						</div>
+						<p>
+							The characters selector allows the user to select specific
+							characters to pull data from. By default all the main
+							characters (the 6 with the most overall lines) are
+							selected. All non main characters are put into a separate
+							detail section to prevent left side from getting a bunch of
+							unnessary scroll. You can also search for specific
+							characters within this detail section to make sifting
+							through that list a bit easier. The "Other Characters" list
+							is also sorted by number of lines so Mike is the character
+							with the next most amount of lines after Phoebe. It also
+							shows a total selected characters count in the top right
+							where if you hover over it you can see the number of main
+							characters and other characters selected as well. Checking
+							any box from this selector will update the chord and
+							wordclouds charts on the right hand side to only pull
+							lines, scenes, etc... from those characters.
+						</p>
+					</div>
+					<div class="vis-view">
+						<h4>Line Charts</h4>
+						<img src="./images/visualComponents/freqs.png" />
+						<p>...</p>
+					</div>
+					<div class="vis-view">
+						<h4>Word Clouds</h4>
+						<img src="./images/visualComponents/histogram.png" />
+						<p>...</p>
+					</div>
+					<div class="vis-view">
+						<h4>Chord Charts</h4>
+						<div
+							style="
+								display: flex;
+								min-height: 0;
+								width: 100%;
+								justify-content: center;
+							"
+						>
+							<img src="./images/visualComponents/chord.png" />
+						</div>
+						<p>
+							The chord charts display character relationships. There are
+							two chord charts, one for scene relationships and the other
+							for episode relationships. Simply put, we count the number
+							of scenes/episodes every character selected share within
+							the episode selections and show the strength of the
+							relationships over those domains with the chord ribbons.
+							There are also tooltips on these charts so hovering over a
+							specific ribbon will show you the number of scenes/episodes
+							the characters connected with said ribbon share. You can
+							also hover over the individual character arcs to see how
+							many total scenes/episodes the character is in.
+						</p>
+					</div>
+				</div>
+			</sl-details>
+		</section>
+
+		<section>
+			<sl-details open summary="Sketches">
+				<div class="content">
+					<div class="code-structure">
+						<div class="code-section">
+							<div class="code-image-block">
+								<p>example</p>
+								<img src="./images/sketches/Layout.png" />
+							</div>
+							<div class="code-image-block">
+								<p>example 2</p>
+								<img src="./images/sketches/Map.png" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</sl-details>
+		</section>
+
+		<section>
+			<sl-details open summary="Discovery">
+				<div class="content">...</div>
+			</sl-details>
+		</section>
+
+		<section>
+			<sl-details open summary="Process">
+				<div class="content">
+					<p>
+						For libraries we used d3js, d3-cloud, puppeteer, and shoelace.
+						d3 was mainly used in building the chord and line charts.
+						d3-cloud was specifically for generating the word cloud.
+						Puppeteer was used for our web scraping purposes. It is
+						highlight in more detail in the data section of this
+						documentation. Shoelace was an interesting webcomponent based
+						library for building our control and layout menus. It gave us
+						some more interesting UI elements to work with and made it
+						easier to select certain subselections of episodes/characters
+						and change the size of the viewable graphs.
+					</p>
+
+					<div class="code-structure">
+						<h4>Our code was structured in the following way:</h4>
+
+						<sl-carousel
+							pagination
+							navigation
+							mouse-dragging
+							style="--scroll-hint: 0%; height: 90vh"
+						>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<img src="./images/code/main.png" />
+									<p>
+										First our main function collects all the data from
+										the csv, processes said data, then initializes all
+										the charts and event listeners.
+									</p>
+								</div>
+							</sl-carousel-item>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<img src="./images/code/data-processing.png" />
+									<p>
+										The processData function loops over all the
+										rawData from the json file and does some places it
+										into a map like structure. This will make it
+										easier to find certain episodes later without
+										having to loop through a big array.
+									</p>
+								</div>
+							</sl-carousel-item>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<img src="./images/code/event-listeners.png" />
+									<p>
+										The eventListeners in this case are for when the
+										split panel is repositioned or the tab group
+										selection is changed. This ensures the charts stay
+										responsive to the containing view resizing and
+										show the most accurate data possible between tab
+										changes.
+									</p>
+								</div>
+							</sl-carousel-item>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<img src="./images/code/data-variables.png" />
+									<p>
+										We also had a globals file that stored all global
+										variables that would be shared across different
+										chart types. These variables include the rawData
+										from the json, the processedData which is the
+										rawData with in a faster map structure, then the
+										actual data which is the filtered down version of
+										the processedData based on character/episode
+										selections.
+									</p>
+								</div>
+							</sl-carousel-item>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<img src="./images/code/chart-variables.png" />
+									<p>
+										We also had global variables for all the chart
+										instances. This makes it easier to access any
+										chart from anywhere in the code and makes it
+										especially easy to trigger updateVis method from
+										other chart interactions.
+									</p>
+								</div>
+							</sl-carousel-item>
+							<sl-carousel-item>
+								<div class="carousel-item-content">
+									<div
+										style="
+											display: flex;
+											min-height: 0;
+											width: 100%;
+											justify-content: center;
+										"
+									>
+										<img src="./images/code/helper-variables.png" />
+										<img src="./images/code/helper-variables2.png" />
+									</div>
+									<p>
+										Finally, there were also a few helper functions
+										defined globally. The main two of note are the
+										updateAllVis and handleGlobalFilterChange. These
+										functions handle calling the updateVis/updateData
+										on all the charts, and applying new filtering
+										logic to the processedData to send to the chart
+										instances on some character/episode selections
+										change. Another interesting concept is debouncing
+										the handleGlobalFilterChange. Because all the
+										charts call this, making sure frequent potentially
+										duplicated calls dont trigger unessecary
+										processing, a debounce was implemented to
+										basically wait 50ms after a call to this method is
+										made and if no new call is made in that time it
+										does the processing. You can also see special
+										logic for the word clouds were done since we have
+										a wordcloud instance per character selected and
+										destroying an instance for a character that was
+										unselected or creating a new instance for a
+										character that was selected was necessary.
+									</p>
+								</div>
+							</sl-carousel-item>
+						</sl-carousel>
+					</div>
+
+					<p>
+						Of course there are lots of more interesting areas, such as
+						the chart implementations themselves, how the chord graph
+						builds its relationship matrix, how the line graphs are
+						constructed but I will leave that for you to investigate in
+						our sourcecode!
+					</p>
+					<br />
+					<p>
+						You can access the source code
+						<a
+							target="_blank"
+							href="https://github.com/ko-penn/Data-Visualizations-Project-3"
+						>
+							here
+						</a>
+						and run it simply in VSCode with the live preview extension on
+						the index.html file. You can also see the live version
+						<a
+							target="_blank"
+							href="https://data-visualizations-project-3.netlify.app/"
+							>here</a
+						>.
+					</p>
+				</div>
+			</sl-details>
+		</section>
+
+		<section>
+			<sl-details open summary="Demo">
+				<div class="content">
+					<div class="video-container">
+						<!-- <iframe
+                     src="https://www.youtube.com/embed/OTGighXTjCk"
+                  ></iframe> -->
+					</div>
+				</div>
+			</sl-details>
+		</section>
+
+		<section>
+			<sl-details open summary="Contributions">
+				<div class="content">
+					<p>
+						<b>Devin Harris</b>: Web Scrapper, Site Layout
+						(Episodes/Character Selectors), Chord Graphs
+					</p>
+					<p><b>Kody Penn</b>:</p>
+					<p><b>Alex Yang</b>:</p>
+				</div>
+			</sl-details>
+		</section>
+
+		<script>
+			function collapseAll() {
+				Array.from(document.querySelectorAll('details'))
+					.concat(Array.from(document.querySelectorAll('sl-details')))
+					.forEach((element) => {
+						element.open = false;
+					});
+			}
+
+			function expandAll() {
+				Array.from(document.querySelectorAll('details'))
+					.concat(Array.from(document.querySelectorAll('sl-details')))
+					.forEach((element) => {
+						element.open = true;
+					});
+			}
+
+			document.addEventListener('DOMContentLoaded', () => {
+				const dialog = document.querySelector(
+					'.transcripts-dialog-overview'
+				);
+				const openButton = document.getElementById('transcriptsOpenBtn');
+				const closeButton = dialog.querySelector(
+					'sl-button[variant="primary"]'
+				);
+
+				openButton.addEventListener('click', () => dialog.show());
+				closeButton.addEventListener('click', () => dialog.hide());
+			});
+		</script>
+	</body>
 </html>

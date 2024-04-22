@@ -1,7 +1,8 @@
 import { Chord } from './charts/chord.js';
 import { Episodes } from './charts/episodes.js';
-import { Words } from './charts/words.js';
 import { Stacked } from './charts/stacked.js';
+import { WordCloud } from './charts/word-cloud.js';
+import { Words } from './charts/words.js';
 import { CharacterFormBuilder } from './helpers/character-form-builder.js';
 import { EpisodeFormBuilder } from './helpers/episode-form-builder.js';
 
@@ -34,7 +35,7 @@ async function main() {
       parentElementSelector: '#stacked-lines-container',
       id: 'stacked-lines',
       groupingKey: 'scene',
-   })
+   });
    scenesChord = new Chord({
       parentElementSelector: '#scenes-chord-container',
       id: 'scene-chord',
@@ -45,6 +46,8 @@ async function main() {
       id: 'episode-chord',
       groupingKey: 'episode',
    });
+
+   initializeCharacterWordClouds();
 
    await handleGlobalFilterChange();
 
@@ -65,5 +68,23 @@ function processData() {
    rawData.forEach((d) => {
       const key = processDataKeyBuilder(d);
       processedData[key] = d;
+   });
+}
+
+function initializeCharacterWordClouds() {
+   Array.from(
+      new Set(
+         characterFormBuilder.checkboxs
+            .filter((c) => c.checked)
+            .map((c) => c.getAttribute('data-character'))
+      )
+   ).forEach((character) => {
+      wordClouds[character] = new WordCloud(
+         {
+            parentElementSelector: '#character-word-cloud-container',
+            id: character + '-word-cloud',
+         },
+         character
+      );
    });
 }

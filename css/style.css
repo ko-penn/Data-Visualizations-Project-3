@@ -171,6 +171,11 @@ button:hover {
    grid-row-end: 4;
 }
 
+#character-word-cloud-container {
+   height: 100%;
+   width: 100%;
+}
+
 .chords {
    display: grid;
    grid-template-columns: repeat(auto-fit, minmax(30em, calc(50% - 1em)));

@@ -47,11 +47,11 @@ export class Episodes {
 
         this.xtitle = this.svg.append('text')
             .attr('x', 200)
-            .attr('y', 140)
+            .attr('y', 180)
             .text(this.xAxisTitle);
       
         this.ytitle = this.svg.append('text')
-            .attr('x', -110)
+            .attr('x', -130)
             .attr('y', 12)
             .text(this.yAxisTitle)
             .style('transform','rotate(270deg)');
@@ -160,12 +160,6 @@ export class Episodes {
                     .y((d) => (episodesLine.y(+d.episodes)))
                 (d.values)}
             )
-            /*.attr("d", function(d){
-                return d3.line()
-                    .x((d) => (this.x(d.season)))
-                    .y((d) => (this.y(+d.episodes)))
-                (d.values)}
-            )*/
         }
         this.xAxisG.call(this.xAxis);
         this.yAxisG.call(this.yAxis);

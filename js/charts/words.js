@@ -45,13 +45,13 @@ export class Words {
            .attr('width', '100%')
            .attr('height', '100%');
 
-       this.xtitle = this.svg.append('text')
+        this.xtitle = this.svg.append('text')
            .attr('x', 200)
-           .attr('y', 140)
+           .attr('y', 180)
            .text(this.xAxisTitle);
      
        this.ytitle = this.svg.append('text')
-           .attr('x', -85)
+           .attr('x', -110)
            .attr('y', 12)
            .text(this.yAxisTitle)
            .style('transform','rotate(270deg)');

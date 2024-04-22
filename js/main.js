@@ -31,7 +31,7 @@ async function main() {
       groupingKey: 'scene',
    });
    linesStacked = new Stacked({
-      parentElementSelector: 'stacked-lines-container',
+      parentElementSelector: '#stacked-lines-container',
       id: 'stacked-lines',
       groupingKey: 'scene',
    })

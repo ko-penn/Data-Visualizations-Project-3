@@ -10,11 +10,14 @@ export class Stacked {
  
         this.width = 0;
         this.height = 0;
-        this.xAxisTitle = 'Seasons';
-        this.yAxisTitle = '# of Episodes';
+        this.xAxisTitle = 'Episodes';
+        this.yAxisTitle = '# of Lines';
+        this.uniqueCharacters = [];
         this.characterEpisodes = [];
+        this.activeEpisodes = [];
         this.activeSeasons = [];
- 
+        this.stackedData = [];
+
         this.initVis();
  
         window.addEventListener('resize', () => {
@@ -46,8 +49,8 @@ export class Stacked {
             .attr('height', '100%');
 
         this.xtitle = this.svg.append('text')
-            .attr('x', 200)
-            .attr('y', 140)
+            .attr('x', 500)
+            .attr('y', 220)
             .text(this.xAxisTitle);
       
         this.ytitle = this.svg.append('text')
@@ -56,8 +59,8 @@ export class Stacked {
             .text(this.yAxisTitle)
             .style('transform','rotate(270deg)');
 
-        this.x = d3.scaleLinear()
-            .domain([1, 10])
+        this.x = d3.scaleBand()
+            .domain(['1-1','1-2','1-3'])
             .range([ this.config.margin.left, this.width-this.config.margin.left]);
 
         this.xAxis = d3.axisBottom().scale(this.x);
@@ -137,60 +140,40 @@ export class Stacked {
         this.setWidthAndHeight();
     
         let max = -1;
-        this.characterEpisodes.forEach((d) => {
-            d.values.forEach((e) => {
-                if(+e.episodes > max){
-                    max = +e.episodes;
+        this.stackedData.forEach((d) => {
+            d.forEach((e) => {
+                if(e[1] > max){
+                    max = e[1];
                 }
             })
         })
         //console.log('max: '+max);
 
         //console.log('updateVis() width: '+this.width+' height: '+this.height);
-        this.x.domain(d3.extent(this.activeSeasons.reduce( (acc, x ) => acc.concat(+x), []))).range([this.config.margin.left,this.width-this.config.margin.left]);
+        this.x.domain(this.activeEpisodes).range([this.config.margin.left,this.width-this.config.margin.left]);
         this.y.domain([0,max]).range([this.height,0]);
 
-        this.svg.selectAll("path")
-            .data(this.characterEpisodes)
-            .join("path")
-
         //https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
-        //console.log('updateVis: '+ this.characterEpisodes);
-        if(this.characterEpisodes != [] && this.characterEpisodes !== null){
-            this.svg.selectAll(".line")
-            .data(this.characterEpisodes)
-            .join("path")
-            .attr("fill", "none")
-            .attr("stroke", (d) => this.colorScale(d.key) )
-            .attr("stroke-width", 1.5)
-            .attr("d", function(d){
-                return d3.line()
-                    .x((d) => (episodesLine.x(d.season)))
-                    .y((d) => (episodesLine.y(+d.episodes)))
-                (d.values)}
-            )
-            /*.attr("d", function(d){
-                return d3.line()
-                    .x((d) => (this.x(d.season)))
-                    .y((d) => (this.y(+d.episodes)))
-                (d.values)}
-            )*/
+        if(this.stackedData != [] && this.stackedData !== null){
+            this.svg.selectAll("g")
+                .data(this.stackedData)
+                .join("g")
+                    .attr("fill", (d) => this.colorScale(d.key))
+                    .selectAll("rect")
+                        .data((d) => d)
+                        .join("rect")
+                            .attr("x",function(d) { if(linesStacked.x(d.data.group)<0) {return(1)} else {return linesStacked.x(d.data.group)}})
+                            .attr("y",function(d) { if(linesStacked.y(d[1])<0) {return(1)} else {return linesStacked.y(d[1])}})
+                            .attr("height",function(d) { if((linesStacked.y(d[0]) - linesStacked.y(d[1]))<1){return(+0)} else {return (linesStacked.y(d[0]) - linesStacked.y(d[1]))}})
+                            .attr("width",this.x.bandwidth())
         }
+        
         this.xAxisG.call(this.xAxis);
         this.yAxisG.call(this.yAxis);
     }
+    
 
     setWidthAndHeight() {
-        /*if (this.svg?.node()) {
-            this.width =
-               this.svg.node().getBoundingClientRect().width -
-               this.config.margin.left -
-               this.config.margin.right;
-            this.height =
-               this.svg.node().getBoundingClientRect().height -
-               this.config.margin.top -
-               this.config.margin.bottom;
-        }*/
         const svg = document.getElementById(this.config.id)?.querySelector("svg");
         if (svg) {
             this.width =

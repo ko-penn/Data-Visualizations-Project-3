@@ -251,6 +251,20 @@ export class WordCloud {
          })
          .padding(5);
       this.layout.start();
+
+      const wordCloudWords = this.chart
+         .selectAll('text')
+         .style('opacity','0.7');
+
+      wordCloudWords
+         .on('mouseenter', (event, d) => {
+            this.mouseOverTooltipCB(event, d)
+            d3.select(event.target).transition().style('opacity', 1);
+         })
+         .on('mouseleave', (event) =>{
+            this.mouseLeaveTooltipCB();
+            d3.select(event.target).transition().style('opacity', 0.7);
+         });
    }
 
    draw(words) {
@@ -305,5 +319,42 @@ export class WordCloud {
    destroy() {
       this.mainDiv.node().remove();
       wordClouds[this.character] = undefined;
+   }
+
+   mouseOverTooltipCB(event, data){
+      const tooltip = d3.select('#tooltip');
+      const tooltipElm = tooltip.node();
+      const tooltipBounds = tooltipElm.getBoundingClientRect();
+      const chartBounds = this.config.parentElement.getBoundingClientRect();
+      const { pageX, pageY } = event;
+
+      tooltip
+         .style('pointer-events', 'all')
+         .style('opacity', '1')
+         .style(
+            'left',
+            Math.min(
+               pageX,
+               chartBounds.x + chartBounds.width - tooltipBounds.width
+            ) + 'px'
+         )
+         .style(
+            'top',
+            pageY
+             +
+               10 +
+               'px'
+         )
+         .html(() => {
+            return `
+            <div>Text: ${data.text}</div>
+            <div>Word Count: ${data.size}</div>`
+         });
+   }
+
+   mouseLeaveTooltipCB(event){
+      d3.select('#tooltip')
+         .style('opacity','0')
+         .style('pointer-events','none');
    }
 }

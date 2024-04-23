@@ -46,7 +46,7 @@ export class Episodes {
             .attr('height', '100%');
 
         this.xtitle = this.svg.append('text')
-            .attr('x', 200)
+            .attr('x', 180)
             .attr('y', 180)
             .text(this.xAxisTitle);
       
@@ -161,8 +161,27 @@ export class Episodes {
                 return d3.line()
                     .x((d) => (episodesLine.x(d.season)))
                     .y((d) => (episodesLine.y(+d.episodes)))
-                (d.values)}
-            )
+                (d.values)});
+            /*.on('mouseover', (event,d) => {
+                console.log(event,d);
+                let name = d.key;
+                let text = '';
+                for(let i = 0; i<(d.values.length); i++){
+                    let season = d.values[i]['season'];
+                    let numEpis = d.values[i]['episodes'];
+                    text = text.concat(season,': ',numEpis,'<br>');
+                }
+                d3.select('#tooltipstacked')
+                  .style('display', 'block')
+                  .style('left', (event.pageX+this.xtooltippadding) + 'px')   
+                  .style('top', (event.pageY+this.ytooltippadding) + 'px')
+                  .html(`<h3>${name}</h3>
+                    <p>${text}</p>
+                `);
+                })
+              .on('mouseleave', () => {
+                d3.select('#tooltipstacked').style('display', 'none');
+              });*/
         }
         this.xAxisG.call(this.xAxis);
         this.yAxisG.call(this.yAxis);
@@ -190,15 +209,5 @@ export class Episodes {
             //this.x?.range([0, this.width]);
             //this.y?.range([this.height, 0]);
         }
-    }
-
-    mouseOverTooltipCB(event, data) {
-
-    }
-
-    mouseLeaveTooltipCB(event) {
-       d3.select('#tooltip')
-          .style('opacity', '0')
-          .style('pointer-events', 'none');
     }
  }

@@ -17,7 +17,8 @@ export class Stacked {
         this.activeEpisodes = [];
         this.activeSeasons = [];
         this.stackedData = [];
-        this.tooltippadding = 10;
+        this.xtooltippadding = 10;
+        this.ytooltippadding = -50;
 
         this.initVis();
  
@@ -50,12 +51,12 @@ export class Stacked {
             .attr('height', '100%');
 
         this.xtitle = this.svg.append('text')
-            .attr('x', 500)
+            .attr('x', 420)
             .attr('y', 220)
             .text(this.xAxisTitle);
       
         this.ytitle = this.svg.append('text')
-            .attr('x', -110)
+            .attr('x', -120)
             .attr('y', 12)
             .text(this.yAxisTitle)
             .style('transform','rotate(270deg)');
@@ -180,8 +181,8 @@ export class Stacked {
                                 //console.log(event,d);
                                 d3.select('#tooltipstacked')
                                   .style('display', 'block')
-                                  .style('left', (event.pageX+this.tooltippadding) + 'px')   
-                                  .style('top', (event.pageY+this.tooltippadding) + 'px')
+                                  .style('left', (event.pageX+this.xtooltippadding) + 'px')   
+                                  .style('top', (event.pageY+this.ytooltippadding) + 'px')
                                   .html(`<h3>Season ${season} Episode ${episode}</h3>
                                     <p>${text}</p>
                                 `);

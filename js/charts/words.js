@@ -47,7 +47,7 @@ export class Words {
 
 		this.xtitle = this.svg
 			.append('text')
-			.attr('x', 200)
+			.attr('x', 180)
 			.attr('y', 180)
 			.text(this.xAxisTitle);
 
@@ -140,15 +140,7 @@ export class Words {
 			data.forEach((e) => {
 				e.scenes.forEach((f) => {
 					f.lines.forEach((g) => {
-						/*if(g.quoteFrom === 'Rachel'){
-                    //console.log(g.quoteFrom);
-                    console.log('episode: '+e.episode+' scene: '+f.scene);
-                }*/
-						if (
-							e.speakers.includes(
-								this.characterLines[this.characterLines.length - 1].key
-							)
-						) {
+						if((this.characterLines[this.characterLines.length-1].key) === g.quoteFrom){
 							let currentCharacter = this.characterLines.length - 1;
 							let currentSeason = this.activeSeasons.indexOf(
 								e.season.toString()
@@ -159,13 +151,13 @@ export class Words {
 								this.characterLines[currentCharacter].values[
 									currentSeason
 								].lines + 1;
-						}
-					});
+						};
 				});
 			});
 		});
 		// console.log(this.characterLines);
 		this.updateVis();
+		})
 	}
 
 	updateVis() {

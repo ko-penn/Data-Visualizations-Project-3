@@ -96,7 +96,7 @@ export class Words {
 	}
 
 	updateData(data) {
-		console.log([...data]);
+		// console.log([...data]);
 		this.mainCharacters = [
 			'Rachel',
 			'Ross',
@@ -164,7 +164,7 @@ export class Words {
 				});
 			});
 		});
-		console.log(this.characterLines);
+		// console.log(this.characterLines);
 		this.updateVis();
 	}
 

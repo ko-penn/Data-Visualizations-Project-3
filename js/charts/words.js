@@ -31,7 +31,21 @@ export class Words {
 				.append('div')
 				.style('height', '100%')
 				.style('width', '100%')
-				.attr('id', this.config.id);
+				.attr('id', this.config.id)
+				.style("display", "grid")
+				.style(
+				"grid-template-areas",
+					`
+						"y chart chart chart chart"
+						"y chart chart chart chart"
+						"y chart chart chart chart"
+						"y chart chart chart chart"
+						". x x x x"
+						". legend legend legend legend"
+					`
+				)
+				.style("grid-template-columns", "max-content repeat(4, 1fr)")
+				.style("grid-template-rows", "repeat(4, 1fr) repeat(2, max-content)");
 		} else {
 			this.mainDiv = d3.select(
 				`${this.config.parentElementSelector} #${this.config.id}`
@@ -40,53 +54,69 @@ export class Words {
 
 		this.setWidthAndHeight();
 
+		this.mainDiv
+		.append("p")
+		.attr("class", "y-axis-title")
+		.style("grid-area", "y")
+		.style("writing-mode", "vertical-rl")
+		.style("text-orientation", "mixed")
+		.style("text-align", "center")
+		.style("transform", "rotate(180deg)")
+		.text(this.yAxisTitle);
+
+		this.mainDiv
+		.append("p")
+		.attr("class", "x-axis-title")
+		.style("grid-area", "x")
+		.style("text-align", "center")
+		.text(this.xAxisTitle);
+
 		this.svg = this.mainDiv
 			.append('svg')
 			.attr('width', '100%')
-			.attr('height', '100%');
+			.attr('height', '100%')
+			.style("grid-area", "chart");
 
-		this.xtitle = this.svg
-			.append('text')
-			.attr('x', 180)
-			.attr('y', 180)
-			.text(this.xAxisTitle);
-
-		this.ytitle = this.svg
-			.append('text')
-			.attr('x', -110)
-			.attr('y', 12)
-			.text(this.yAxisTitle)
-			.style('transform', 'rotate(270deg)');
+		this.chart = this.svg
+			.append("g")
+			.attr(
+			  "transform",
+			  `translate(${this.config.margin.left},${this.config.margin.top / 2})`
+			);
+	  
+		this.dataGroup = this.chart
+			.append("g")
+			.attr("class", "data-group")
+			.attr("clip-path", `url(#${this.config.id}-clip)`);
 
 		this.x = d3
 			.scaleLinear()
 			.domain([1, 10])
 			.range([
-				this.config.margin.left,
-				this.width - this.config.margin.left,
+				0,
+				this.width,
 			]);
 
 		this.xAxis = d3.axisBottom().scale(this.x);
 
-		this.xAxisG = this.svg
-			.append('g')
-			.attr(
-				'transform',
-				'translate(' + this.config.margin.left + ',' + this.height + ')'
-			);
-
-		/*this.xAxisG = this.svg.append("g")
-           .attr("transform", "translate(0," + this.height + ")")
-           .call(d3.axisBottom(this.x).ticks(5));*/
+		this.xAxisG = this.chart
+			.append("g")
+			.attr("class", "axis x-axis")
+			.attr("clip-path", `url(#${this.config.id}-clip)`);
 
 		this.y = d3.scaleLinear().domain([0, 10000]).range([this.height, 0]);
 
 		this.yAxis = d3.axisLeft().scale(this.y);
 
-		this.yAxisG = this.svg.append('g');
+		this.yAxisG = this.chart.append("g").attr("class", "axis y-axis");
 
-		/*this.yAxisG = this.svg.append("g")
-           .call(d3.axisLeft(this.y));*/
+		this.clipPath = this.svg
+			.append("defs")
+			.append("clipPath")
+			.attr("id", `${this.config.id}-clip`)
+			.append("rect")
+			.attr("width", this.width)
+			.attr("height", this.height);
 
 		this.colorScale = d3
 			.scaleOrdinal(d3.schemeTableau10)
@@ -96,7 +126,6 @@ export class Words {
 	}
 
 	updateData(data) {
-		// console.log([...data]);
 		this.mainCharacters = [
 			'Rachel',
 			'Ross',
@@ -118,7 +147,6 @@ export class Words {
 					.map((c) => c.getAttribute('data-character'))
 			)
 		);
-		//console.log(this.uniqueCharacters);
 		this.activeSeasons = Array.from(
 			new Set(
 				episodeFormBuilder.treeItems
@@ -126,7 +154,6 @@ export class Words {
 					.map((c) => c.getAttribute('data-season'))
 			)
 		);
-		//console.log(this.activeSeasons);
 		this.characterLines = [];
 		this.uniqueCharacters.forEach((d) => {
 			this.characterLines.push({ key: d, values: [] });
@@ -136,7 +163,6 @@ export class Words {
 					lines: 0,
 				});
 			});
-			//console.log(data);
 			data.forEach((e) => {
 				e.scenes.forEach((f) => {
 					f.lines.forEach((g) => {
@@ -155,7 +181,7 @@ export class Words {
 				});
 			});
 		});
-		// console.log(this.characterLines);
+
 		this.updateVis();
 		})
 	}
@@ -171,26 +197,20 @@ export class Words {
 				}
 			});
 		});
-		//console.log('max: '+max);
 
-		//console.log('updateVis() width: '+this.width+' height: '+this.height);
 		this.x
 			.domain(
 				d3.extent(this.activeSeasons.reduce((acc, x) => acc.concat(+x), []))
 			)
-			.range([
-				this.config.margin.left,
-				this.width - this.config.margin.left,
-			]);
+			.range([0, this.width]);
 		this.y.domain([0, max]).range([this.height, 0]);
 
-		this.svg.selectAll('path').data(this.characterLines).join('path');
-		this.svg.selectAll('.line').data(this.characterLines).join('path');
+		this.dataGroup.selectAll('path').data(this.characterLines).join('path');
+		this.dataGroup.selectAll('.line').data(this.characterLines).join('path');
 
 		//https://d3-graph-gallery.com/graph/line_several_group.html
-		//console.log('updateVis: '+ this.characterLines);
 		if (this.characterLines != [] && this.characterLines !== null) {
-			this.svg
+			this.dataGroup
 				.selectAll('.line')
 				.data(this.characterLines)
 				.join('path')
@@ -203,12 +223,6 @@ export class Words {
 						.x((d) => wordsLine.x(d.season))
 						.y((d) => wordsLine.y(+d.lines))(d.values);
 				});
-			//.attr("d", function(d){
-			//  return d3.line()
-			//    .x((d) => (this.x(d.season)))
-			//  .y((d) => (this.y(+d.episodes)))
-			//(d.values)}
-			//)
 		}
 		this.xAxisG.call(this.xAxis);
 		this.yAxisG.call(this.yAxis);
@@ -225,27 +239,10 @@ export class Words {
 				svg.getBoundingClientRect().height -
 				this.config.margin.top -
 				this.config.margin.bottom;
-			//console.log('setWidthAndHeight() width: '+this.width+' height: '+this.height);
 
-			//this.xAxisG?.attr("transform", `translate(${this.config.margin.left} ,${this.height})`);
 			this.xAxisG?.attr('transform', `translate(0 ,${this.height})`);
-			this.yAxisG?.attr(
-				'transform',
-				`translate(${this.config.margin.left} ,0)`
-			);
 
-			//this.clipPath?.attr("width", this.width).attr("height", this.height);
-
-			//this.x?.range([0, this.width]);
-			//this.y?.range([this.height, 0]);
+			this.clipPath?.attr("width", this.width).attr("height", this.height);
 		}
-	}
-
-	mouseOverTooltipCB(event, data) {}
-
-	mouseLeaveTooltipCB(event) {
-		d3.select('#tooltip')
-			.style('opacity', '0')
-			.style('pointer-events', 'none');
 	}
 }

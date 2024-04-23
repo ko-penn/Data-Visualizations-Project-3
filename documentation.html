@@ -276,9 +276,25 @@
 						</p>
 					</div>
 					<div class="vis-view">
-						<h4>Line Charts</h4>
-						<img src="./images/visualComponents/freqs.png" />
-						<p>...</p>
+						<h4>Multi-Line Charts</h4>
+						<img src="./images/visualComponents/lineCharts.png" />
+						<p>The multi-line charts show number of episodes and lines vs 
+							seasons for the main characters. The episode and character 
+							selectors can be used to filter the data used in the charts. 
+							Both charts have a tooltip that shows the season and the y-axis 
+							information for all active main characters on hover.
+						</p>
+					</div>
+					<div class="vis-view">
+						<h4>Stacked Bar Chart</h4>
+						<img src="./images/visualComponents/stackedChart.png" />
+						<p>The stacked bar chart shows the number of lines vs episode. 
+							The data can be filtered using the episode and/or character 
+							selectors. The tooltip shows the season and episode number 
+							with the number of lines for each active main character.
+							*The x-axis is crowded due to there being 229 episodes, but 
+							if the seasons are filtered then the labels can be read easier.
+						</p>
 					</div>
 					<div class="vis-view">
 						<h4>Word Clouds</h4>
@@ -336,7 +352,14 @@
 
 		<section>
 			<sl-details open summary="Discovery">
-				<div class="content">...</div>
+				<div class="content">
+					<img src="./images/discoveries/numberOfEpisodesvsSeasons.png" />
+					<p>Each of the main characters are in nearly all of the episodes. The data for Season 2 used abbreviations for some names, that is why there is variation.</p>
+					<img src="./images/discoveries/numberOfLinesvsEpisodes.png" />
+					<p>The number of lines in later season finales tends to be significantly higher for main characters.</p>
+					<img src="./images/discoveries/relationshipChords.png" />
+					<p>Ross and Phoebe have the lowest number of scenes together, 692. Chandler and Monica have the highest number of scenes together, 1,079.</p>
+				</div>
 			</sl-details>
 		</section>
 
@@ -499,9 +522,9 @@
 			<sl-details open summary="Demo">
 				<div class="content">
 					<div class="video-container">
-						<!-- <iframe
-                     src="https://www.youtube.com/embed/OTGighXTjCk"
-                  ></iframe> -->
+						<iframe
+                     		src="https://www.youtube.com/embed/GQOJD7Kuacs?si=H2d55CFvTnzDJ1cK"
+                  		></iframe>
 					</div>
 				</div>
 			</sl-details>
@@ -514,7 +537,7 @@
 						<b>Devin Harris</b>: Web Scrapper, Site Layout
 						(Episodes/Character Selectors), Chord Graphs
 					</p>
-					<p><b>Kody Penn</b>:</p>
+					<p><b>Kody Penn</b>: Multi-Line Charts, Stacked Bar Chart</p>
 					<p><b>Alex Yang</b>:</p>
 				</div>
 			</sl-details>

@@ -14,6 +14,8 @@ export class Words {
 		this.yAxisTitle = '# of Lines';
 		this.characterLines = [];
 		this.activeSeasons = [];
+		this.xtooltippadding = -10;
+        this.ytooltippadding = 20;
 
 		this.initVis();
 
@@ -205,6 +207,8 @@ export class Words {
 			.range([0, this.width]);
 		this.y.domain([0, max]).range([this.height, 0]);
 
+		//this.xAxis.tickValues(this.activeSeasons);
+
 		this.dataGroup.selectAll('path').data(this.characterLines).join('path');
 		this.dataGroup.selectAll('.line').data(this.characterLines).join('path');
 
@@ -222,6 +226,32 @@ export class Words {
 						.line()
 						.x((d) => wordsLine.x(d.season))
 						.y((d) => wordsLine.y(+d.lines))(d.values);
+				})
+				.on('mouseover', (event,d) => {
+					let x = event.offsetX;
+					let range = this.x.range();
+					let bandwidth = (range[1]-range[0])/this.x.ticks().length;
+					let bin = Math.floor((x-this.config.margin.left)/bandwidth);
+					let season = (Math.floor((this.x.ticks()[bin])/1)).toString();
+					let text='';
+					if(this.activeSeasons.includes(season)){
+						for (let i = 0; i<this.uniqueCharacters.length;i++){
+							text = text.concat(this.characterLines[i].key,': ',this.characterLines[i].values[bin].lines,'<br>');
+						}
+					}
+					else{
+						text = text.concat('is not selected in filter');
+					}
+					d3.select('#tooltipwords')
+						.style('display', 'block')
+						.style('left', (event.pageX+this.xtooltippadding) + 'px')
+						.style('top', (event.pageY+this.ytooltippadding) + 'px')
+						.html(`<h3>Season: ${season}</h3
+						<p>${text}</p>
+					`);
+					})
+				.on('mouseleave', () => {
+					d3.select('#tooltipwords').style('display', 'none');
 				});
 		}
 		this.xAxisG.call(this.xAxis);
@@ -241,6 +271,13 @@ export class Words {
 				this.config.margin.bottom;
 
 			this.xAxisG?.attr('transform', `translate(0 ,${this.height})`);
+
+			if(this.width<=0){
+                this.width = 1;
+            }
+            if(this.height<=0){
+                this.height = 1;
+            }
 
 			this.clipPath?.attr("width", this.width).attr("height", this.height);
 		}

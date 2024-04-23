@@ -237,10 +237,14 @@ export class Stacked {
 
             this.xAxisG?.attr("transform", `translate(${0} ,${this.height})`);
 
-            this.clipPath?.attr("width", this.width).attr("height", this.height);
+            if(this.width<=0){
+                this.width = 1;
+            }
+            if(this.height<=0){
+                this.height = 1;
+            }
 
-            this.x?.range([0, this.width]);
-            this.y?.range([this.height, 0]);
+            this.clipPath?.attr("width", this.width).attr("height", this.height);
         }
     }
  }

@@ -14,6 +14,8 @@ export class Episodes {
         this.yAxisTitle = '# of Episodes';
         this.characterEpisodes = [];
         this.activeSeasons = [];
+        this.xtooltippadding = -10;
+        this.ytooltippadding = 20;
  
         this.initVis();
  
@@ -173,6 +175,8 @@ export class Episodes {
         this.x.domain(d3.extent(this.activeSeasons.reduce( (acc, x ) => acc.concat(+x), []))).range([0,this.width]);
         this.y.domain([0,max]).range([this.height,0]);
 
+        //this.xAxis.tickValues(this.activeSeasons);
+
         this.dataGroup.selectAll("path")
             .data(this.characterEpisodes)
             .join("path");
@@ -192,27 +196,33 @@ export class Episodes {
                 return d3.line()
                     .x((d) => (episodesLine.x(d.season)))
                     .y((d) => (episodesLine.y(+d.episodes)))
-                (d.values)});
-            /*.on('mouseover', (event,d) => {
-                console.log(event,d);
-                let name = d.key;
-                let text = '';
-                for(let i = 0; i<(d.values.length); i++){
-                    let season = d.values[i]['season'];
-                    let numEpis = d.values[i]['episodes'];
-                    text = text.concat(season,': ',numEpis,'<br>');
+                (d.values)})
+            .on('mouseover', (event,d) => {
+                let x = event.offsetX;
+                let range = this.x.range();
+                let bandwidth = (range[1]-range[0])/this.x.ticks().length;
+                let bin = Math.floor((x-this.config.margin.left)/bandwidth);
+                let season = (Math.floor((this.x.ticks()[bin])/1)).toString();
+                let text='';
+                if(this.activeSeasons.includes(season)){
+                    for (let i = 0; i<this.uniqueCharacters.length;i++){
+                        text = text.concat(this.characterEpisodes[i].key,': ',this.characterEpisodes[i].values[bin].episodes,'<br>');
+                    }
                 }
-                d3.select('#tooltipstacked')
-                  .style('display', 'block')
-                  .style('left', (event.pageX+this.xtooltippadding) + 'px')   
-                  .style('top', (event.pageY+this.ytooltippadding) + 'px')
-                  .html(`<h3>${name}</h3>
+                else{
+                    text = text.concat('is not selected in filter');
+                }
+                d3.select('#tooltipepisode')
+                    .style('display', 'block')
+                    .style('left', (event.pageX+this.xtooltippadding) + 'px')
+                    .style('top', (event.pageY+this.ytooltippadding) + 'px')
+                    .html(`<h3>Season: ${season}</h3
                     <p>${text}</p>
                 `);
                 })
-              .on('mouseleave', () => {
-                d3.select('#tooltipstacked').style('display', 'none');
-              });*/
+                .on('mouseleave', () => {
+                d3.select('#tooltipepisode').style('display', 'none');
+                });
         }
         this.xAxisG.call(this.xAxis);
         this.yAxisG.call(this.yAxis);
@@ -231,6 +241,13 @@ export class Episodes {
                 this.config.margin.bottom;
 
             this.xAxisG?.attr("transform", `translate(0 ,${this.height})`);
+
+            if(this.width<=0){
+                this.width = 1;
+            }
+            if(this.height<=0){
+                this.height = 1;
+            }
 
             this.clipPath?.attr("width", this.width).attr("height", this.height);
         }

@@ -118,7 +118,18 @@
 
 		<section>
 			<sl-details open summary="Motivation">
-				<div class="content">...</div>
+				<div class="content">
+					Using this application, users are able to gather various information on the TV show, F.R.I.E.N.D.S.
+					Starting off at the <b>general tab</b>, users can read about the synopsis of the show, the main characters,
+					show information, and a breakdown of each season. The application also as a sidenav which includes filtering
+					selections for seasons, episodes, and characters. Next on the <b>Character Info</b> tab, users can see how 
+					many episodes each character appears in, the number of lines each character has in each season, as well as
+					a count of the number of lines in each episodes across the various seasons. The third tab contains the <b>Character Wordclouds</b>.
+					Here users can see the top 100 most frequently said words from each selected character from the character selection sidebar.
+					Finally, the last tab, <b>Character Relations</b>, users can see how many scenes and episodes the selected characters share with
+					one another.
+
+				</div>
 			</sl-details>
 		</section>
 
@@ -282,8 +293,13 @@
 					</div>
 					<div class="vis-view">
 						<h4>Word Clouds</h4>
-						<img src="./images/visualComponents/histogram.png" />
-						<p>...</p>
+						<img src="./images/visualComponents/wordCloud.png" />
+						<p>
+							Each character selected from the character selection sidebar will have a word cloud generated on the
+							Character Wordclouds tab. Each wordcloud will be populated with the top 100 most said words by each
+							character from the seasons/episodes selected. Hovering each word in the wordcloud will give a tooltip
+							of the word itself as well as the word count.
+						</p>
 					</div>
 					<div class="vis-view">
 						<h4>Chord Charts</h4>
@@ -321,12 +337,37 @@
 					<div class="code-structure">
 						<div class="code-section">
 							<div class="code-image-block">
-								<p>example</p>
-								<img src="./images/sketches/Layout.png" />
+								<p>
+									Below, we have the general layout sketch of our application. 
+									Here we have the show title on the top right corner, a sidenav
+									for a filtering selection, tabs for each page component, and finally
+									an area for the page component to be
+								</p>
+								<img src="./images/sketches/generalLayoutSketch.jpg" />
 							</div>
 							<div class="code-image-block">
-								<p>example 2</p>
-								<img src="./images/sketches/Map.png" />
+								<p>
+									Below, we have the page content for character information. 
+									On this page, we will use graphs to show how frequent each character
+									appears in the show through the number of appearances in episodes across
+									the various seasons and the number of lines each character has.
+								</p>
+								<img src="./images/sketches/characterInfoSketch.jpg" />
+							</div>
+							<div class="code-image-block">
+								<p>
+									Below, we have a sketch of the wordcloud. Each character will have
+									a generated wordcloud with their top 100 most said words.
+								</p>
+								<img src="./images/sketches/characterWordcloudSketch.jpg" />
+							</div>
+							<div class="code-image-block">
+								<p>
+									Below, we have a chord graph to show the relations between characters
+									based on the number of shared scenes and episodes each character has with one
+									another signified thorugh connecting lines between the characters.
+								</p>
+								<img src="./images/sketches/characterRelationSketch.jpg" />
 							</div>
 						</div>
 					</div>
@@ -515,7 +556,7 @@
 						(Episodes/Character Selectors), Chord Graphs
 					</p>
 					<p><b>Kody Penn</b>:</p>
-					<p><b>Alex Yang</b>:</p>
+					<p><b>Alex Yang</b>: Character WordClouds</p>
 				</div>
 			</sl-details>
 		</section>

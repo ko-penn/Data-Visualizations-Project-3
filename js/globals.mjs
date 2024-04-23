@@ -22,8 +22,8 @@ globalThis.processedData = {};
 
 globalThis.processDataKeyBuilder = (d) => `${d.season}-${d.episode}`;
 globalThis.processDataKeyParser = (key) => {
-   const [season, episode] = key.split('-');
-   return { season, episode };
+	const [season, episode] = key.split('-');
+	return { season, episode };
 };
 
 /**
@@ -77,109 +77,109 @@ globalThis.wordClouds = {};
  * Updates all global instances of all visualizations
  */
 globalThis.updateAllVis = (dataChange) => {
-   if (dataChange) {
-      Object.entries(wordClouds).forEach(([character, instance]) =>
-         instance?.updateData(data)
-      );
-      episodesLine?.updateData(data);
-      wordsLine?.updateData(data);
-      linesStacked?.updateData(data);
-      scenesChord?.updateData(data);
-      episodesChord?.updateData(data);
-   } else {
-      Object.entries(wordClouds)?.forEach(([character, instance]) =>
-         instance?.updateVis()
-      );
-      episodesLine?.updateVis();
-      wordsLine?.updateVis();
-      linesStacked?.updateVis();
-      scenesChord?.updateVis();
-      episodesChord?.updateVis();
-   }
+	if (dataChange) {
+		Object.entries(wordClouds).forEach(([character, instance]) =>
+			instance?.updateData(data)
+		);
+		episodesLine?.updateData(data);
+		wordsLine?.updateData(data);
+		linesStacked?.updateData(data);
+		scenesChord?.updateData(data);
+		episodesChord?.updateData(data);
+	} else {
+		Object.entries(wordClouds)?.forEach(([character, instance]) =>
+			instance?.updateVis()
+		);
+		episodesLine?.updateVis();
+		wordsLine?.updateVis();
+		linesStacked?.updateVis();
+		scenesChord?.updateVis();
+		episodesChord?.updateVis();
+	}
 };
 
 /**
  * Handles refiltering processed data on a global filter change
  */
 const debouncePromise = (fn, ms = 0) => {
-   let timeoutId;
-   const pending = [];
-   return (...args) =>
-      new Promise((res, rej) => {
-         clearTimeout(timeoutId);
-         timeoutId = setTimeout(() => {
-            const currentPending = [...pending];
-            pending.length = 0;
-            Promise.resolve(fn.apply(this, args)).then(
-               (data) => {
-                  currentPending.forEach(({ resolve }) => resolve(data));
-               },
-               (error) => {
-                  currentPending.forEach(({ reject }) => reject(error));
-               }
-            );
-         }, ms);
-         pending.push({ resolve: res, reject: rej });
-      });
+	let timeoutId;
+	const pending = [];
+	return (...args) =>
+		new Promise((res, rej) => {
+			clearTimeout(timeoutId);
+			timeoutId = setTimeout(() => {
+				const currentPending = [...pending];
+				pending.length = 0;
+				Promise.resolve(fn.apply(this, args)).then(
+					(data) => {
+						currentPending.forEach(({ resolve }) => resolve(data));
+					},
+					(error) => {
+						currentPending.forEach(({ reject }) => reject(error));
+					}
+				);
+			}, ms);
+			pending.push({ resolve: res, reject: rej });
+		});
 };
 const handleGlobalFilterChangeFunction = (forceDataChange = false) =>
-   new Promise((resolve) => {
-      const preData = [...data];
+	new Promise((resolve) => {
+		const preData = [...data];
 
-      const selectedCharacters = new Set(
-         characterFormBuilder.checkboxs
-            .filter((c) => c.checked)
-            .map((c) => c.getAttribute('data-character'))
-      );
-      Object.keys(wordClouds).forEach((k) => {
-         if (!selectedCharacters.has(k)) {
-            wordClouds[k]?.destroy();
-         }
-      });
-      Array.from(selectedCharacters).forEach((character) => {
-         if (!wordClouds[character]) {
-            wordClouds[character] = new WordCloud(
-               {
-                  parentElementSelector: '#character-word-cloud-container',
-                  id: character + '-word-cloud',
-               },
-               character
-            );
-         }
-      });
+		const selectedCharacters = new Set(
+			characterFormBuilder.checkboxs
+				.filter((c) => c.checked)
+				.map((c) => c.getAttribute('data-character'))
+		);
+		Object.keys(wordClouds).forEach((k) => {
+			if (!selectedCharacters.has(k)) {
+				wordClouds[k]?.destroy();
+			}
+		});
+		Array.from(selectedCharacters).forEach((character) => {
+			if (!wordClouds[character]) {
+				wordClouds[character] = new WordCloud(
+					{
+						parentElementSelector: '#character-word-cloud-container',
+						id: character + '-word-cloud',
+					},
+					character
+				);
+			}
+		});
 
-      data = Object.keys(processedData)
-         .filter((key) => {
-            if (
-               episodeFormBuilder.treeItems.some(
-                  (c) => c.getAttribute('data-key') === key && c.selected
-               )
-            ) {
-               return true;
-            }
+		data = Object.keys(processedData)
+			.filter((key) => {
+				if (
+					episodeFormBuilder.treeItems.some(
+						(c) => c.getAttribute('data-key') === key && c.selected
+					)
+				) {
+					return true;
+				}
 
-            return false;
-         })
-         .map((key) => {
-            const d = processedData[key];
-            d.scenes = d.scenes.map((s) => {
-               s.lines = s.lines.filter((l) =>
-                  Array.from(selectedCharacters).some((c) =>
-                     l.speakers.some(
-                        (speaker) => speaker.toLowerCase() === c.toLowerCase()
-                     )
-                  )
-               );
-               return s;
-            });
-            return d;
-         });
-      updateAllVis(
-         JSON.stringify(data) !== JSON.stringify(preData) || forceDataChange
-      );
-      resolve();
-   });
+				return false;
+			})
+			.map((key) => {
+				const d = { ...processedData[key] };
+				d.scenes = [...d.scenes].map((s) => {
+					s.lines = [...s.lines].filter((l) =>
+						Array.from(selectedCharacters).some((c) =>
+							l.speakers.some(
+								(speaker) => speaker.toLowerCase() === c.toLowerCase()
+							)
+						)
+					);
+					return s;
+				});
+				return d;
+			});
+		updateAllVis(
+			JSON.stringify(data) !== JSON.stringify(preData) || forceDataChange
+		);
+		resolve();
+	});
 globalThis.handleGlobalFilterChange = debouncePromise(
-   handleGlobalFilterChangeFunction,
-   50
+	handleGlobalFilterChangeFunction,
+	50
 );

@@ -322,14 +322,11 @@ export class WordCloud {
    }
 
    mouseOverTooltipCB(event, data){
-      console.log(event);
       const tooltip = d3.select('#tooltip');
       const tooltipElm = tooltip.node();
       const tooltipBounds = tooltipElm.getBoundingClientRect();
       const chartBounds = this.config.parentElement.getBoundingClientRect();
-      const { pageX } = event;
-      const source = event.srcElement;
-      const sourceBounds = source.getBoundingClientRect();
+      const { pageX, pageY } = event;
 
       tooltip
          .style('pointer-events', 'all')
@@ -343,7 +340,7 @@ export class WordCloud {
          )
          .style(
             'top',
-            sourceBounds.y
+            pageY
              +
                10 +
                'px'

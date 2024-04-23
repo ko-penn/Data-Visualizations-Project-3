@@ -143,7 +143,10 @@ export class Episodes {
 
         this.svg.selectAll("path")
             .data(this.characterEpisodes)
-            .join("path")
+            .join("path");
+        this.svg.selectAll('.line')
+            .data(this.characterEpisodes)
+            .join("path");
 
         //https://d3-graph-gallery.com/graph/line_several_group.html
         //console.log('updateVis: '+ this.characterEpisodes);
@@ -166,16 +169,6 @@ export class Episodes {
     }
 
     setWidthAndHeight() {
-        /*if (this.svg?.node()) {
-            this.width =
-               this.svg.node().getBoundingClientRect().width -
-               this.config.margin.left -
-               this.config.margin.right;
-            this.height =
-               this.svg.node().getBoundingClientRect().height -
-               this.config.margin.top -
-               this.config.margin.bottom;
-        }*/
         const svg = document.getElementById(this.config.id)?.querySelector("svg");
         if (svg) {
             this.width =
@@ -194,8 +187,8 @@ export class Episodes {
 
             //this.clipPath?.attr("width", this.width).attr("height", this.height);
 
-            this.x?.range([0, this.width]);
-            this.y?.range([this.height, 0]);
+            //this.x?.range([0, this.width]);
+            //this.y?.range([this.height, 0]);
         }
     }
 

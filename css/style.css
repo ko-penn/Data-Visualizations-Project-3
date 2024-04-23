@@ -171,6 +171,17 @@ button:hover {
    grid-row-end: 4;
 }
 
+#tooltipstacked {
+   position: absolute;
+   display: none;
+   background: #fff;
+   border: 1px solid #ddd;
+   font-size: 12px;
+   font-weight: 500;
+   padding: 3px;
+   color: #000000;
+}
+
 #character-word-cloud-container {
    height: 100%;
    width: 100%;

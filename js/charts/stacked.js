@@ -17,6 +17,7 @@ export class Stacked {
         this.activeEpisodes = [];
         this.activeSeasons = [];
         this.stackedData = [];
+        this.tooltippadding = 10;
 
         this.initVis();
  
@@ -166,6 +167,28 @@ export class Stacked {
                             .attr("y",function(d) { if(linesStacked.y(d[1])<0) {return(1)} else {return linesStacked.y(d[1])}})
                             .attr("height",function(d) { if((linesStacked.y(d[0]) - linesStacked.y(d[1]))<1){return(+0)} else {return (linesStacked.y(d[0]) - linesStacked.y(d[1]))}})
                             .attr("width",this.x.bandwidth())
+                            .on('mouseover', (event,d) => {
+                                let season = d['data']['group'].substring(0, d['data']['group'].indexOf('-'));
+                                let episode = d['data']['group'].substring(d['data']['group'].indexOf('-')+1, d['data']['group'].length);
+                                //console.log('season '+season+', episode '+episode);
+                                let text = '';
+                                for(let i = 1; i<(Object.keys(d['data']['columns']).length); i++){
+                                    let name = d['data']['columns'][i];
+                                    text = text.concat(name,': ',d['data'][name],'<br>');
+                                }
+                                //console.log(text);
+                                //console.log(event,d);
+                                d3.select('#tooltipstacked')
+                                  .style('display', 'block')
+                                  .style('left', (event.pageX+this.tooltippadding) + 'px')   
+                                  .style('top', (event.pageY+this.tooltippadding) + 'px')
+                                  .html(`<h3>Season ${season} Episode ${episode}</h3>
+                                    <p>${text}</p>
+                                `);
+                                })
+                              .on('mouseleave', () => {
+                                d3.select('#tooltipstacked').style('display', 'none');
+                              });
         }
         
         this.xAxisG.call(this.xAxis);
@@ -195,15 +218,5 @@ export class Stacked {
             this.x?.range([0, this.width]);
             this.y?.range([this.height, 0]);
         }
-    }
-
-    mouseOverTooltipCB(event, data) {
-
-    }
-
-    mouseLeaveTooltipCB(event) {
-       d3.select('#tooltip')
-          .style('opacity', '0')
-          .style('pointer-events', 'none');
     }
  }

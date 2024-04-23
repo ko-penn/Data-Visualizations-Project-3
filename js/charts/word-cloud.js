@@ -327,7 +327,7 @@ export class WordCloud {
       const tooltipElm = tooltip.node();
       const tooltipBounds = tooltipElm.getBoundingClientRect();
       const chartBounds = this.config.parentElement.getBoundingClientRect();
-      const { pageX, screenY } = event;
+      const { pageX } = event;
       const source = event.srcElement;
       const sourceBounds = source.getBoundingClientRect();
 
@@ -343,10 +343,8 @@ export class WordCloud {
          )
          .style(
             'top',
-            Math.min(
-               sourceBounds.y,
-               chartBounds.y + chartBounds.height - tooltipBounds.height
-            ) +
+            sourceBounds.y
+             +
                10 +
                'px'
          )

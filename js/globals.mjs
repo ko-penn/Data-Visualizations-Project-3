@@ -162,17 +162,23 @@ const handleGlobalFilterChangeFunction = (forceDataChange = false) =>
 			})
 			.map((key) => {
 				const d = { ...processedData[key] };
-				d.scenes = [...d.scenes].map((s) => {
-					s.lines = [...s.lines].filter((l) =>
-						Array.from(selectedCharacters).some((c) =>
-							l.speakers.some(
-								(speaker) => speaker.toLowerCase() === c.toLowerCase()
-							)
-						)
-					);
-					return s;
-				});
-				return d;
+
+				return {
+					...d,
+					scenes: d.scenes.map((s) => {
+						return {
+							...s,
+							lines: s.lines.filter((l) =>
+								Array.from(selectedCharacters).some((c) =>
+									l.speakers.some(
+										(speaker) =>
+											speaker.toLowerCase() === c.toLowerCase()
+									)
+								)
+							),
+						};
+					}),
+				};
 			});
 		updateAllVis(
 			JSON.stringify(data) !== JSON.stringify(preData) || forceDataChange

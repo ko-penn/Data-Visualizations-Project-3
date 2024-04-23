@@ -36,7 +36,20 @@ export class Stacked {
              .append('div')
              .style('height', '100%')
              .style('width', '100%')
-             .attr('id', this.config.id);
+             .attr('id', this.config.id).style("display", "grid")
+             .style(
+               "grid-template-areas",
+               `
+                       "y chart chart chart chart"
+                       "y chart chart chart chart"
+                       "y chart chart chart chart"
+                       "y chart chart chart chart"
+                       ". x x x x"
+                       ". legend legend legend legend"
+                    `
+             )
+             .style("grid-template-columns", "max-content repeat(4, 1fr)")
+             .style("grid-template-rows", "repeat(4, 1fr) repeat(2, max-content)");
         } else {
             this.mainDiv = d3.select(
              `${this.config.parentElementSelector} #${this.config.id}`
@@ -45,33 +58,50 @@ export class Stacked {
 
         this.setWidthAndHeight();
 
+        this.mainDiv
+        .append("p")
+        .attr("class", "y-axis-title")
+        .style("grid-area", "y")
+        .style("writing-mode", "vertical-rl")
+        .style("text-orientation", "mixed")
+        .style("text-align", "center")
+        .style("transform", "rotate(180deg)")
+        .text(this.yAxisTitle);
+  
+        this.mainDiv
+        .append("p")
+        .attr("class", "x-axis-title")
+        .style("grid-area", "x")
+        .style("text-align", "center")
+        .text(this.xAxisTitle);
+
         this.svg = this.mainDiv
             .append('svg')
             .attr('width', '100%')
-            .attr('height', '100%');
+            .attr('height', '100%')
+            .style("grid-area", "chart");
 
-        this.xtitle = this.svg.append('text')
-            .attr('x', 420)
-            .attr('y', 220)
-            .text(this.xAxisTitle);
-      
-        this.ytitle = this.svg.append('text')
-            .attr('x', -120)
-            .attr('y', 12)
-            .text(this.yAxisTitle)
-            .style('transform','rotate(270deg)');
+        this.chart = this.svg
+            .append("g")
+            .attr(
+              "transform",
+              `translate(${this.config.margin.left},${this.config.margin.top / 2})`
+        );
+
+        this.dataGroup = this.chart
+        .append("g")
+        .attr("class", "data-group")
+        .attr("clip-path", `url(#${this.config.id}-clip)`);
 
         this.x = d3.scaleBand()
-            .domain(['1-1','1-2','1-3'])
             .range([ this.config.margin.left, this.width-this.config.margin.left]);
 
         this.xAxis = d3.axisBottom().scale(this.x);
 
-        this.xAxisG = this.svg.append('g').attr("transform", "translate("+(this.config.margin.left)+"," + this.height + ")")
-        
-        /*this.xAxisG = this.svg.append("g")
-            .attr("transform", "translate(0," + this.height + ")")
-            .call(d3.axisBottom(this.x).ticks(5));*/
+        this.xAxisG = this.chart
+            .append("g")
+            .attr("class", "axis x-axis")
+            .attr("clip-path", `url(#${this.config.id}-clip)`);
         
         this.y = d3.scaleLinear()
             .domain([0, 30])
@@ -79,10 +109,15 @@ export class Stacked {
 
         this.yAxis = d3.axisLeft().scale(this.y);
 
-        this.yAxisG = this.svg.append('g');
+        this.yAxisG = this.chart.append("g").attr("class", "axis y-axis");
         
-        /*this.yAxisG = this.svg.append("g")
-            .call(d3.axisLeft(this.y));*/
+        this.clipPath = this.svg
+            .append("defs")
+            .append("clipPath")
+            .attr("id", `${this.config.id}-clip`)
+            .append("rect")
+            .attr("width", this.width)
+            .attr("height", this.height);
 
         this.colorScale = d3
         .scaleOrdinal(d3.schemeTableau10)
@@ -102,7 +137,6 @@ export class Stacked {
                   .map((c) => c.getAttribute('data-character'))
             )
         );
-        //console.log(this.uniqueCharacters);
         this.activeEpisodes = Array.from(
             new Set(
                episodeFormBuilder.treeItems
@@ -133,8 +167,6 @@ export class Stacked {
 
         this.stackedData = d3.stack().keys(this.uniqueCharacters)(this.episodeLines);
         
-        //console.log(this.episodeLines);
-        //console.log(this.stackedData);
         this.updateVis();
     }
  
@@ -149,15 +181,12 @@ export class Stacked {
                 }
             })
         })
-        //console.log('max: '+max);
-
-        //console.log('updateVis() width: '+this.width+' height: '+this.height);
-        this.x.domain(this.activeEpisodes).range([this.config.margin.left,this.width-this.config.margin.left]);
+        this.x.domain(this.activeEpisodes).range([0,this.width]);
         this.y.domain([0,max]).range([this.height,0]);
 
         //https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
         if(this.stackedData != [] && this.stackedData !== null){
-            this.svg.selectAll("g")
+            this.dataGroup.selectAll("g")
                 .data(this.stackedData)
                 .join("g")
                     .attr("fill", (d) => this.colorScale(d.key))
@@ -171,14 +200,11 @@ export class Stacked {
                             .on('mouseover', (event,d) => {
                                 let season = d['data']['group'].substring(0, d['data']['group'].indexOf('-'));
                                 let episode = d['data']['group'].substring(d['data']['group'].indexOf('-')+1, d['data']['group'].length);
-                                //console.log('season '+season+', episode '+episode);
                                 let text = '';
                                 for(let i = 1; i<(Object.keys(d['data']['columns']).length); i++){
                                     let name = d['data']['columns'][i];
                                     text = text.concat(name,': ',d['data'][name],'<br>');
                                 }
-                                //console.log(text);
-                                //console.log(event,d);
                                 d3.select('#tooltipstacked')
                                   .style('display', 'block')
                                   .style('left', (event.pageX+this.xtooltippadding) + 'px')   
@@ -208,13 +234,10 @@ export class Stacked {
                 svg.getBoundingClientRect().height -
                 this.config.margin.top -
                 this.config.margin.bottom;
-            //console.log('setWidthAndHeight() width: '+this.width+' height: '+this.height);
 
-            //this.xAxisG?.attr("transform", `translate(${this.config.margin.left} ,${this.height})`);
-            this.xAxisG?.attr("transform", `translate(0 ,${this.height})`);
-            this.yAxisG?.attr("transform", `translate(${this.config.margin.left} ,0)`);
+            this.xAxisG?.attr("transform", `translate(${0} ,${this.height})`);
 
-            //this.clipPath?.attr("width", this.width).attr("height", this.height);
+            this.clipPath?.attr("width", this.width).attr("height", this.height);
 
             this.x?.range([0, this.width]);
             this.y?.range([this.height, 0]);
